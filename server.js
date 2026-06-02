@@ -16,6 +16,7 @@ const Seguidor = require('./models/Seguidor');
 const Notificacion = require('./models/Notificacion');
 const Coleccion = require('./models/Coleccion');
 
+const usuarioRoutes = require('./routes/usuarioRoutes');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -36,6 +37,11 @@ app.use(session({
 app.get('/', (req, res) => {
   res.send('<h1>¡Servidor levantado con éxito!</h1>');
 });
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use('/api/usuarios', usuarioRoutes);
 
 const iniciarBaseDeDatos = async () => {
   try {
