@@ -1,0 +1,31 @@
+const { DataTypes } = require('sequelize');
+const { sequelize } = require('../config/db');
+const Usuario = require('./Usuario'); 
+
+const Publicacion = sequelize.define('Publicacion', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
+  titulo: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  descripcion: {
+    type: DataTypes.TEXT,
+    allowNull: true 
+  },
+  urlImagen: {
+    type: DataTypes.STRING,
+    allowNull: false 
+  }
+}, {
+  tableName: 'publicaciones',
+  timestamps: true
+});
+
+Usuario.hasMany(Publicacion, { foreignKey: 'usuarioId', onDelete: 'CASCADE' });
+Publicacion.belongsTo(Usuario, { foreignKey: 'usuarioId' });
+
+module.exports = Publicacion;
