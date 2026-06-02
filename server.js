@@ -17,6 +17,7 @@ const Notificacion = require('./models/Notificacion');
 const Coleccion = require('./models/Coleccion');
 
 const usuarioRoutes = require('./routes/usuarioRoutes');
+const publicacionRoutes = require('./routes/publicacionRoutes');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -42,6 +43,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use('/api/usuarios', usuarioRoutes);
+app.use('/api/publicaciones',publicacionRoutes);
 
 const iniciarBaseDeDatos = async () => {
   try {
