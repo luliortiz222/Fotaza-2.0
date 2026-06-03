@@ -20,6 +20,8 @@ const usuarioRoutes = require('./routes/usuarioRoutes');
 const publicacionRoutes = require('./routes/publicacionRoutes');
 const comentarioRoutes = require('./routes/comentarioRoutes');
 const valoracionRoutes = require('./routes/valoracionRoutes');
+const seguidorRoutes = require('./routes/seguidorRoutes');
+const coleccionRoutes = require('./routes/coleccionRoutes');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -48,6 +50,8 @@ app.use('/api/usuarios', usuarioRoutes);
 app.use('/api/publicaciones',publicacionRoutes);
 app.use('/api/comentarios', comentarioRoutes);
 app.use('/api/valoraciones', valoracionRoutes);
+app.use('/api/seguidores', seguidorRoutes);
+app.use('/api/colecciones', coleccionRoutes);
 
 const iniciarBaseDeDatos = async () => {
   try {
