@@ -24,6 +24,7 @@ const seguidorRoutes = require('./routes/seguidorRoutes');
 const coleccionRoutes = require('./routes/coleccionRoutes');
 const etiquetaRoutes = require('./routes/etiquetaRoutes');
 const notificacionRoutes = require('./routes/notificacionRoutes');
+const vistasRoutes = require('./routes/vistasRoutes');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -56,6 +57,7 @@ app.use('/api/seguidores', seguidorRoutes);
 app.use('/api/colecciones', coleccionRoutes);
 app.use('/api/notificaciones', notificacionRoutes);
 app.use('/api/etiquetas', etiquetaRoutes);
+app.use('/', vistasRoutes);
 const iniciarBaseDeDatos = async () => {
   try {
     await conectarDB();

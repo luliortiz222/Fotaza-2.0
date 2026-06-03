@@ -1,0 +1,28 @@
+extends layout
+
+block content
+  .form-container
+    h2 Crear una cuenta nueva 
+    p.subtitle Unite a la comunidad de Fotaza
+    
+    form(action="/api/usuarios" method="POST")
+      .form-group
+        label(for="nombre") Nombre Completo
+        input#nombre(type="text" name="nombre" placeholder="Ej: Valentina Espósito" required)
+      
+      .form-group
+        label(for="usuario") Nombre de Usuario
+        input#usuario(type="text" name="usuario" placeholder="Ej: valen_witch" required)
+      
+      .form-group
+        label(for="email") Correo Electrónico
+        input#email(type="email" name="email" placeholder="valen@sanm.com" required)
+      
+      .form-group
+        label(for="password") Contraseña
+        input#password(type="password" name="password" placeholder="Mínimo 8 caracteres" required)
+      
+      button.btn-submit(type="submit") Registrarme
+    
+    p.form-footer ¿Ya tenés cuenta? 
+      a(href="/login") Iniciá sesión acá
