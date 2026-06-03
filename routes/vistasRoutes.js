@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 router.get('/registro', (req, res) => {
-  res.render('registro'); // Busca el archivo 'registro.pug' en la carpeta views
+  res.render('registro');
 });
 
 router.get('/login', (req, res) => {
