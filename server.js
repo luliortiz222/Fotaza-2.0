@@ -18,6 +18,8 @@ const Coleccion = require('./models/Coleccion');
 
 const usuarioRoutes = require('./routes/usuarioRoutes');
 const publicacionRoutes = require('./routes/publicacionRoutes');
+const comentarioRoutes = require('./routes/comentarioRoutes');
+const valoracionRoutes = require('./routes/valoracionRoutes');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -44,6 +46,8 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use('/api/usuarios', usuarioRoutes);
 app.use('/api/publicaciones',publicacionRoutes);
+app.use('/api/comentarios', comentarioRoutes);
+app.use('/api/valoraciones', valoracionRoutes);
 
 const iniciarBaseDeDatos = async () => {
   try {
