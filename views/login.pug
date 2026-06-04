@@ -12,9 +12,12 @@ block content
       
       .form-group
         label(for="password") Contraseña
-        input#password(type="password" name="password" placeholder="Ingresá tu contraseña" required)
+        div(style="display: flex; gap: 8px; align-items: center;")
+          input#password(type="password" name="password" placeholder="Entre 4 y 13 caracteres" required minlength="4" maxlength="13" style="flex: 1;")
+          button#togglePassword(type="button" style="background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.4); border-radius: 12px; padding: 14px; cursor: pointer; color: #312e81; font-weight: bold; font-size: 0.85rem; width: 75px;") Ver
       
       button.btn-submit(type="submit") Ingresar
     
     p.form-footer ¿No tenés cuenta todavía? 
       a(href="/registro") Registrate acá
+    script(src="/js/password-helper.js")
