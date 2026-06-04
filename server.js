@@ -43,7 +43,12 @@ app.use(session({
 }));
 
 app.get('/', (req, res) => {
-  res.send('<h1>¡Servidor levantado con éxito!</h1>');
+  if (!req.session.usuarioId) {
+    return res.redirect('/login');
+  }
+  res.render('index', { 
+    nombreUsuario: req.session.nombreUsuario 
+  });
 });
 
 app.use(express.json());

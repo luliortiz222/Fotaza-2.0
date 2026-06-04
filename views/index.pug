@@ -1,0 +1,20 @@
+doctype html
+html(lang="es")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Fotaza - Home
+    link(rel="stylesheet", href="/css/estilos.css") 
+  body
+    header
+      div.nav-container
+        h1 Fotaza
+        if nombreUsuario
+        div.user-actions
+          span.welcome-msg ¡Hola, @#{nombreUsuario}!
+          a.btn-logout(href="/api/usuarios/logout") Cerrar Sesión
+    
+    main.container
+      section.welcome-section
+        h2 ¡Bienvenido a tu Feed!
+        p Ya estás dentro de la red social. Acá van a aparecer las próximas publicaciones.
