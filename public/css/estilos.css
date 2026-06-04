@@ -200,3 +200,48 @@ footer {
   border-top: 1px solid var(--border-glass);
   background: rgba(255, 255, 255, 0.1);
 }
+
+main.container section.welcome-section {
+  text-align: center;
+  background: var(--bg-glass);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border: 1px solid var(--border-glass);
+  border-radius: 24px;
+  padding: 40px;
+  box-shadow: 0 20px 40px rgba(49, 46, 129, 0.15);
+}
+
+.user-badge {
+  background: var(--bg-input-glass);
+  border: 1px solid rgba(49, 46, 129, 0.15);
+  padding: 8px 16px;
+  border-radius: 20px;
+  color: var(--texto-principal);
+  font-weight: 700;
+  font-size: 0.9rem;
+  margin-right: 15px;
+  display: inline-block;
+}
+
+.btn-logout {
+  color: var(--color-accent) !important;
+  font-weight: 700;
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: color 0.2s ease;
+}
+
+.btn-logout:hover {
+  text-decoration: underline;
+  color: #991b1b !important;
+}
+
+.nav-links .user-badge {
+  background: var(--bg-input-glass) !important;
+  border: 1px solid rgba(49, 46, 129, 0.2) !important;
+  padding: 6px 14px !important;
+  border-radius: 20px !important;
+  margin-right: 15px;
+  display: inline-block;
+}

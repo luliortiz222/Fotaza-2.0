@@ -7,11 +7,12 @@ html(lang="es")
     link(rel="stylesheet", href="/css/estilos.css") 
   body
     header
-      div.nav-container
-        h1 Fotaza
+      nav.navbar
+        div.nav-logo
+          a(href="/") Fotaza
         if nombreUsuario
-        div.user-actions
-          span.welcome-msg ¡Hola, @#{nombreUsuario}!
+        div.nav-links
+          span.user-badge ¡Hola, @#{nombreUsuario}!
           a.btn-logout(href="/api/usuarios/logout") Cerrar Sesión
     
     main.container
