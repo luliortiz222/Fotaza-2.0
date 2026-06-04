@@ -9,7 +9,15 @@ const Usuario = sequelize.define('Usuario', {
   },
   nombre: {
     type: DataTypes.STRING,
-    allowNull: false // Obligatorio
+    allowNull: false /*Obligatorio*/
+  },
+  usuario: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true, 
+    validate: {
+      len: [3, 30] 
+    }
   },
   email: {
     type: DataTypes.STRING,
