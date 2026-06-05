@@ -51,11 +51,8 @@ app.get('/', (req, res) => {
   });
 });
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
 app.use('/api/usuarios', usuarioRoutes);
-app.use('/api/publicaciones',publicacionRoutes);
+app.use('/api/publicaciones', publicacionRoutes);
 app.use('/api/comentarios', comentarioRoutes);
 app.use('/api/valoraciones', valoracionRoutes);
 app.use('/api/seguidores', seguidorRoutes);
@@ -75,6 +72,6 @@ const iniciarBaseDeDatos = async () => {
 
 iniciarBaseDeDatos();
 
-app.listen(3000, () => {
-  console.log('Servidor corriendo en http://localhost:3000');
+app.listen(PORT, () => {
+  console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });

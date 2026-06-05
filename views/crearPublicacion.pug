@@ -1,0 +1,65 @@
+doctype html
+html(lang="es")
+  head
+    meta(charset="UTF-8")
+    title Compartir Foto | Fotaza
+    link(rel="stylesheet", href="/css/estilos.css") 
+  body
+    header
+      nav.navbar
+        .nav-logo: a(href="/") FOTAZA
+        .nav-links
+          a(href="/") Inicio
+          a(href="/api/publicaciones/crear") + Crear
+    
+    main.container
+      .form-container
+        h2 Nueva Foto
+        p.subtitle Comparte un momento especial
+        
+        if error
+          p(style="color: var(--color-accent); margin-bottom: 15px;")= error
+
+        form(action="/api/publicaciones" method="POST" enctype="multipart/form-data")
+          .form-group
+            label(for="titulo") Título
+            input#titulo(type="text" name="titulo" placeholder="Dale un título genial..." required)
+          
+          .form-group
+            label(for="imagen" class= "btn-archivo") Seleccionar Imagen
+            input#imagen(type="file" name="imagen" accept="image/*" required style="display:none")
+            #preview-container(style="margin-top: 15px; text-align: center; display: none;")
+            img#preview-image(style="max-width: 100%; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);")
+          
+          .form-group
+            label(for="descripcion") Descripción
+            input#descripcion(type="text" name="descripcion" placeholder="¿Qué está pasando aquí?")
+          
+          .form-group
+            label(for="etiquetas") Etiquetas
+            input#etiquetas(type="text" name="etiquetas" placeholder="ej: arte, viaje, amigos")
+
+          button.btn-submit(type="submit") Publicar Foto
+
+    script.
+      document.getElementById('imagen').addEventListener('change', function() {
+        const file = this.files[0];
+        const previewContainer = document.getElementById('preview-container');
+        const previewImage = document.getElementById('preview-image');
+        const btn = document.querySelector('.btn-archivo');
+
+        if (file) {
+          const reader = new FileReader();
+          
+          reader.onload = function(e) {
+            previewImage.src = e.target.result;
+            previewContainer.style.display = 'block';
+            btn.textContent = 'Cambiar foto';
+          }
+          
+          reader.readAsDataURL(file);
+        }
+      });
+
+    footer
+      p &copy; 2026 Fotaza - Tu mundo en fotos

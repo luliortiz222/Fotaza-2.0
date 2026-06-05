@@ -245,3 +245,24 @@ main.container section.welcome-section {
   margin-right: 15px;
   display: inline-block;
 }
+
+.btn-archivo {
+  display: block;
+  width: 100%;
+  background: var(--bg-input-glass);
+  border: 1px solid rgba(49, 46, 129, 0.15);
+  padding: 14px 16px;
+  border-radius: 50px; 
+  text-align: center;
+  color: var(--texto-principal);
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 8px;
+}
+
+.btn-archivo:hover {
+  background: rgba(255, 255, 255, 0.8);
+  border-color: var(--texto-secundario);
+}

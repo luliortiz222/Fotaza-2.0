@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const { crearPublicacion, obtenerPublicaciones } = require('../controllers/publicacionController');
+const publicacionController = require('../controllers/publicacionController');
+const upload = require('../config/multer');
 
-router.get('/', obtenerPublicaciones);
-
-router.post('/', crearPublicacion);
+router.get('/crear', publicacionController.mostrarFormulario);
+router.get('/', publicacionController.obtenerPublicaciones);
+router.post('/', upload.single('imagen'), publicacionController.crearPublicacion);
 
 module.exports = router;

@@ -1,38 +1,50 @@
 const Publicacion = require('../models/Publicacion');
 const Usuario = require('../models/Usuario');
 
+const mostrarFormulario = (req, res) => {
+  //if (!req.session.usuarioId) {
+ //   return res.redirect('/login');
+ // }
+  res.render('crearPublicacion');
+};
+
 const crearPublicacion = async (req, res) => {
   try {
-    const { titulo, descripcion, urlImagen } = req.body;
-
-    if (!titulo || !urlImagen) {
-      return res.status(400).json({ mensaje: 'El título y la imagen son obligatorios.' });
+    if (!req.file) {
+      return res.status(400).render('crearPublicacion', { error: 'Por favor, selecciona una imagen válida.' });
     }
 
-    const usuarioIdTemp = req.session.usuarioId || 1; 
+    const { titulo, descripcion } = req.body;
 
-    const nuevaPublicacion = await Publicacion.create({
+    if (!titulo) {
+      return res.status(400).render('crearPublicacion', { error: 'El título es obligatorio.' });
+    }
+    const usuarioIdReal = req.session.usuarioId || 1;;
+    if (!usuarioIdReal) {
+      return res.status(401).render('login', { error: 'Debes iniciar sesión para publicar.' });
+    }
+    const urlImagenRuta = `/uploads/${req.file.filename}`;
+
+    await Publicacion.create({
       titulo,
       descripcion,
-      urlImagen,
-      usuarioId: usuarioIdTemp
+      urlImagen: urlImagenRuta,
+      usuarioId: usuarioIdReal
     });
 
-    res.status(201).json({
-      mensaje: '¡Publicación creada con éxito!',
-      publicacion: nuevaPublicacion
-    });
+    console.log(`¡Nueva foto publicada con éxito por el usuario ID: ${usuarioIdReal}!`);
+    return res.redirect('/'); 
 
   } catch (error) {
     console.error('Error en crearPublicacion:', error);
-    res.status(500).json({ mensaje: 'Hubo un error al crear la publicación.' });
+    return res.status(500).render('crearPublicacion', { error: 'Hubo un error al crear la publicación.' });
   }
 };
 
 const obtenerPublicaciones = async (req, res) => {
   try {
     const publicaciones = await Publicacion.findAll({
-      include: [{ model: Usuario, attributes: ['nombre', 'email'] }],
+      include: [{ model: Usuario, attributes: ['nombre', 'usuario', 'email'] }],
       order: [['createdAt', 'DESC']]
     });
 
@@ -44,6 +56,7 @@ const obtenerPublicaciones = async (req, res) => {
 };
 
 module.exports = {
+  mostrarFormulario,
   crearPublicacion,
   obtenerPublicaciones
 };
