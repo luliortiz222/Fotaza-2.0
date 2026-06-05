@@ -44,14 +44,17 @@ const crearPublicacion = async (req, res) => {
 const obtenerPublicaciones = async (req, res) => {
   try {
     const publicaciones = await Publicacion.findAll({
-      include: [{ model: Usuario, attributes: ['nombre', 'usuario', 'email'] }],
+      include: [{ model: Usuario, attributes: ['nombre', 'usuario'] }],
       order: [['createdAt', 'DESC']]
     });
 
-    res.status(200).json(publicaciones);
+    res.render('index', { 
+      publicaciones,
+      nombreUsuario: req.session.nombreUsuario
+    });
   } catch (error) {
     console.error('Error en obtenerPublicaciones:', error);
-    res.status(500).json({ mensaje: 'Hubo un error al obtener las publicaciones.' });
+    res.status(500).send('Hubo un error al cargar el feed.');
   }
 };
 

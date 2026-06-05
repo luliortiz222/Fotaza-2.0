@@ -9,13 +9,34 @@ html(lang="es")
     header
       nav.navbar
         div.nav-logo
-          a(href="/") Fotaza
-        if nombreUsuario
+          a(href="/") FOTAZA
         div.nav-links
-          span.user-badge ¡Hola, @#{nombreUsuario}!
-          a.btn-logout(href="/api/usuarios/logout") Cerrar Sesión
+          if nombreUsuario
+            span.user-badge ¡Hola, @#{nombreUsuario}!
+            a.btn-logout(href="/api/usuarios/logout") Cerrar Sesión
+          else
+            a(href="/login") Iniciar Sesión
+            a(href="/registro") Registro
     
     main.container
       section.welcome-section
         h2 ¡Bienvenido a tu Feed!
-        p Ya estás dentro de la red social. Acá van a aparecer las próximas publicaciones.
+        p Descubre las fotos que la comunidad está compartiendo.
+
+      .feed-grid
+        each pub in publicaciones
+          .pub-card
+            img(src=pub.urlImagen, alt=pub.titulo)
+            .card-body
+              h3= pub.titulo
+              p= pub.descripcion
+              p.user-tag @#{pub.Usuario ? pub.Usuario.usuario : 'Anónimo'}
+              
+              .stars-container
+                - for (let i = 5; i >= 1; i--)
+                  input(type="radio" id=`star${i}-${pub.id}` name=`rating-${pub.id}` value=i)
+                  label(for=`star${i}-${pub.id}`) ★
+        else
+          p.no-pub No hay fotos todavía. ¡Sé el primero en publicar!
+
+      a.btn-create(href="/api/publicaciones/crear") +

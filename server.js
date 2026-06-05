@@ -42,14 +42,14 @@ app.use(session({
   cookie: { maxAge: 24 * 60 * 60 * 1000 } 
 }));
 
-app.get('/', (req, res) => {
-  if (!req.session.usuarioId) {
-    return res.redirect('/login');
-  }
-  res.render('index', { 
-    nombreUsuario: req.session.nombreUsuario 
-  });
-});
+//app.get('/', (req, res) => {
+ // if (!req.session.usuarioId) {
+ //   return res.redirect('/login');
+  //}
+  //res.render('index', { 
+  //  nombreUsuario: req.session.nombreUsuario 
+ // });
+//});
 
 app.use('/api/usuarios', usuarioRoutes);
 app.use('/api/publicaciones', publicacionRoutes);
