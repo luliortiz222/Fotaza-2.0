@@ -4,7 +4,9 @@ block content
   .form-container
     h2 Iniciar Sesión 
     p.subtitle ¡Qué bueno verte de nuevo en Fotaza!
-    
+    if error
+      .alert-error(style="background-color: #fee2e2; border: 1px solid #fca5a5; color: #991b1b; padding: 12px; border-radius: 12px; margin-bottom: 20px; text-align: center; font-weight: 500; font-size: 0.95rem;")
+        p= error
     form(action="/api/usuarios/login" method="POST")
       .form-group
         label(for="email") Correo Electrónico

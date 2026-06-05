@@ -6,24 +6,24 @@ const registrarUsuario = async (req, res) => {
     const { nombre, usuario, email, password } = req.body;
 
     if (!nombre || !usuario || !email || !password) {
-      return res.status(400).json({ mensaje: 'Todos los campos son obligatorios.' });
+      return res.status(400).render('registro', { error: 'Todos los campos son obligatorios.' });
     }
 
     const emailExiste = await Usuario.findOne({ where: { email } });
     if (emailExiste) {
-      return res.status(400).json({ mensaje: 'El email ya está registrado.' });
+      return res.status(400).render('registro', { error: 'El email ya está registrado.' });
     }
 
     const usuarioExiste = await Usuario.findOne({ where: { usuario } });
     if (usuarioExiste) {
-      return res.status(400).json({ mensaje: 'El nombre de usuario ya está en uso.' });
+      return res.status(400).render('registro', { error: 'El nombre de usuario ya está en uso.' });
     }
 
     await Usuario.create({
       nombre,
       usuario,
       email,
-      password
+      password: password
     });
 
     console.log(`¡Usuario @${usuario} creado con éxito en Postgres! Redirigiendo...`);
@@ -32,7 +32,7 @@ const registrarUsuario = async (req, res) => {
   } catch (error) {
     console.error('Error en registrarUsuario:', error);
     if (!res.headersSent) {
-      return res.status(500).json({ mensaje: 'Hubo un error en el servidor.' });
+      return res.status(500).render('registro', { error: 'Hubo un error en el servidor.' });
     }
   }
 };
@@ -42,13 +42,13 @@ const loginUsuario = async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return res.status(400).send('<h1>Error: Todos los campos son obligatorios.</h1>');
+      return res.status(400).render('login', { error: 'Todos los campos son obligatorios.' });
     }
 
     const usuario = await Usuario.findOne({ where: { email } });
 
-    if (!usuario || usuario.password !== password) {
-      return res.status(401).send('<h1>Error: Credenciales incorrectas.</h1>');
+    if (usuario.password !== password) {
+      return res.status(401).render('login', { error: 'Credenciales incorrectas.' });
     }
 
     req.session.usuarioId = usuario.id;
@@ -59,7 +59,7 @@ const loginUsuario = async (req, res) => {
 
   } catch (error) {
     console.error('Error en loginUsuario:', error);
-    return res.status(500).send('<h1>Hubo un error en el servidor.</h1>');
+    return res.status(500).render('login', { error: 'Hubo un error en el servidor.' });
   }
 };
 
