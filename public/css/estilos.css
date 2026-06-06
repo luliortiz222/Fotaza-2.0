@@ -430,3 +430,43 @@ footer {
   color: #4a4a4a;
   padding: 5px;
 }
+
+.comments-section { margin-top: 10px; font-size: 0.9em; }
+.comment { border-bottom: 1px solid #eee; padding: 5px 0; }
+
+.comment-form {
+    display: flex;
+    gap: 5px; 
+    margin-top: 10px;
+}
+
+.comment-form input[type="text"] {
+    flex-grow: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.comment-form button {
+    padding: 8px 15px;
+    background-color: #6200ea; 
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+.comment-form button:hover {
+    background-color: #3700b3;
+}
+
+.comment {
+    background-color: #f9f9f9;
+    padding: 8px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    border-left: 3px solid #6200ea; /* Detalle de color lateral */
+}

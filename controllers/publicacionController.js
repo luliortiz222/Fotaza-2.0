@@ -2,6 +2,7 @@ const Publicacion = require('../models/Publicacion');
 const Usuario = require('../models/Usuario');
 const Etiqueta = require('../models/Etiqueta');
 const Valoracion = require('../models/Valoracion');
+const Comentario = require('../models/Comentario');
 
 const mostrarFormulario = (req, res) => {
   //if (!req.session.usuarioId) {
@@ -58,7 +59,13 @@ const obtenerPublicaciones = async (req, res) => {
  try {
     const publicaciones = await Publicacion.findAll({
       where: { usuarioId: req.session.usuarioId },
-      include: [Usuario],
+      include: [
+        Usuario,
+        {
+          model: Comentario,
+          include: [Usuario] 
+        }
+      ],
       order: [['createdAt', 'DESC']]
     });
     const usuarioId = req.session.usuarioId;

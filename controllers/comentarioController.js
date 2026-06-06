@@ -2,6 +2,8 @@ const Comentario = require('../models/Comentario');
 const Usuario = require('../models/Usuario');
 
 const crearComentario = async (req, res) => {
+  console.log("Datos recibidos:", req.body);
+  console.log("Sesión de usuario:", req.session.usuarioId);
   try {
     const { contenido, publicacionId } = req.body;
 
