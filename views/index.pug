@@ -36,6 +36,13 @@ html(lang="es")
                 - for (let i = 5; i >= 1; i--)
                   input(type="radio" id=`star${i}-${pub.id}` name=`rating-${pub.id}` value=i)
                   label(for=`star${i}-${pub.id}`) ★
+                if usuarioId && Number(usuarioId) === Number(pub.usuarioId)
+                .dropdown
+                  input(type="checkbox" id=`menu-${pub.id}` class="dropdown-toggle")
+                  label(for=`menu-${pub.id}` class="dropdown-label") ⋮
+                  .dropdown-menu
+                    form(action=`/api/publicaciones/eliminar/${pub.id}`, method="POST", onsubmit="return confirm('¿Seguro que deseas eliminar esta publicación?');")
+                      button.btn-delete(type="submit") Eliminar
         else
           p.no-pub No hay fotos todavía. ¡Sé el primero en publicar!
 

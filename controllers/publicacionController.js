@@ -44,13 +44,14 @@ const crearPublicacion = async (req, res) => {
 const obtenerPublicaciones = async (req, res) => {
   try {
     const publicaciones = await Publicacion.findAll({
-      include: [{ model: Usuario, attributes: ['nombre', 'usuario'] }],
+      include: [{ model: Usuario, attributes: ['id','nombre', 'usuario'] }],
       order: [['createdAt', 'DESC']]
     });
 
     res.render('index', { 
       publicaciones,
-      nombreUsuario: req.session.nombreUsuario
+      nombreUsuario: req.session.nombreUsuario,
+      usuarioId: req.session.usuarioId
     });
   } catch (error) {
     console.error('Error en obtenerPublicaciones:', error);
@@ -58,8 +59,28 @@ const obtenerPublicaciones = async (req, res) => {
   }
 };
 
+const eliminarPublicacion = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const publicacion = await Publicacion.findByPk(id);
+
+    if (!publicacion) {
+      return res.status(404).send('Publicación no encontrada.');
+    }
+    if (publicacion.usuarioId !== req.session.usuarioId) {
+      return res.status(403).send('No tienes permiso para eliminar esto.');
+    }
+    await publicacion.destroy();
+    res.redirect('/');
+  } catch (error) {
+    console.error('Error al eliminar:', error);
+    res.status(500).send('Error al eliminar la publicación.');
+  }
+};
+
 module.exports = {
   mostrarFormulario,
   crearPublicacion,
-  obtenerPublicaciones
+  obtenerPublicaciones,
+  eliminarPublicacion
 };
