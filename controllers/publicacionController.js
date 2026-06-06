@@ -1,6 +1,7 @@
 const Publicacion = require('../models/Publicacion');
 const Usuario = require('../models/Usuario');
 const Etiqueta = require('../models/Etiqueta');
+const Valoracion = require('../models/Valoracion');
 
 const mostrarFormulario = (req, res) => {
   //if (!req.session.usuarioId) {
@@ -54,21 +55,36 @@ const crearPublicacion = async (req, res) => {
 };
 
 const obtenerPublicaciones = async (req, res) => {
-  try {
+ try {
     const publicaciones = await Publicacion.findAll({
       where: { usuarioId: req.session.usuarioId },
-      include: [{ model: Usuario, attributes: ['id','nombre', 'usuario'] }],
+      include: [Usuario],
       order: [['createdAt', 'DESC']]
     });
+    const usuarioId = req.session.usuarioId;
 
+    const publicacionesConValoracion = await Promise.all(publicaciones.map(async (pub) => {
+      const valoracion = await Valoracion.findOne({
+        where: { 
+          usuarioId: usuarioId || 0,
+          publicacionId: pub.id 
+        }
+      });
+      
+      const pubJSON = pub.toJSON();
+      pubJSON.miPuntuacion = valoracion ? valoracion.puntuacion : 0;
+      
+      return pubJSON;
+    }));
     res.render('index', { 
-      publicaciones,
+      publicaciones: publicacionesConValoracion, 
       nombreUsuario: req.session.nombreUsuario,
-      usuarioId: req.session.usuarioId
+      usuarioId: usuarioId 
     });
+
   } catch (error) {
-    console.error('Error en obtenerPublicaciones:', error);
-    res.status(500).send('Hubo un error al cargar el feed.');
+    console.error('Error al cargar el feed:', error);
+    res.status(500).send('Error al cargar el feed');
   }
 };
 
