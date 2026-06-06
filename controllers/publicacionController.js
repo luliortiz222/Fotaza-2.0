@@ -44,6 +44,7 @@ const crearPublicacion = async (req, res) => {
 const obtenerPublicaciones = async (req, res) => {
   try {
     const publicaciones = await Publicacion.findAll({
+      where: { usuarioId: req.session.usuarioId },
       include: [{ model: Usuario, attributes: ['id','nombre', 'usuario'] }],
       order: [['createdAt', 'DESC']]
     });
