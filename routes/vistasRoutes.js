@@ -12,6 +12,8 @@ const verificarSesion = (req, res, next) => {
 router.get('/registro', (req, res) => { res.render('registro'); });
 router.get('/login', (req, res) => { res.render('login'); });
 
-router.get('/', verificarSesion, publicacionController.obtenerPublicaciones);
+router.get('/', publicacionController.obtenerFeedGlobal);
+
+router.get('/mi-perfil', verificarSesion, publicacionController.obtenerPerfilPersonal);
 
 module.exports = router;

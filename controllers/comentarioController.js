@@ -4,6 +4,9 @@ const Usuario = require('../models/Usuario');
 const crearComentario = async (req, res) => {
   console.log("Datos recibidos:", req.body);
   console.log("Sesión de usuario:", req.session.usuarioId);
+  if (!req.session.usuarioId) {
+    return res.status(401).json({ mensaje: 'Debes iniciar sesión para comentar.' });
+  }
   try {
     const { contenido, publicacionId } = req.body;
 

@@ -55,43 +55,66 @@ const crearPublicacion = async (req, res) => {
   }
 };
 
-const obtenerPublicaciones = async (req, res) => {
- try {
+const obtenerFeedGlobal = async (req, res) => {
+  try {
     const publicaciones = await Publicacion.findAll({
-      where: { usuarioId: req.session.usuarioId },
-      include: [
-        Usuario,
-        {
-          model: Comentario,
-          include: [Usuario] 
-        }
-      ],
+      include: [Usuario, { model: Comentario, include: [Usuario] }],
       order: [['createdAt', 'DESC']]
     });
+
+    const usuarioId = req.session.usuarioId;
+    
+    const publicacionesConValoracion = await Promise.all(publicaciones.map(async (pub) => {
+      const valoracion = usuarioId ? await Valoracion.findOne({
+        where: { usuarioId, publicacionId: pub.id }
+      }) : null;
+      
+      const pubJSON = pub.toJSON();
+      pubJSON.miPuntuacion = valoracion ? valoracion.puntuacion : 0;
+      return pubJSON;
+    }));
+
+    res.render('index', { 
+      publicaciones: publicacionesConValoracion, 
+      titulo: "Feed Global",
+      nombreUsuario: req.session.nombreUsuario,
+      usuarioId: usuarioId 
+    });
+  } catch (error) {
+    console.error('Error en Feed Global:', error);
+    res.status(500).send('Error al cargar el feed');
+  }
+};
+
+const obtenerPerfilPersonal = async (req, res) => {
+  try {
+    const publicaciones = await Publicacion.findAll({
+      where: { usuarioId: req.session.usuarioId },
+      include: [Usuario, { model: Comentario, include: [Usuario] }],
+      order: [['createdAt', 'DESC']]
+    });
+
     const usuarioId = req.session.usuarioId;
 
     const publicacionesConValoracion = await Promise.all(publicaciones.map(async (pub) => {
       const valoracion = await Valoracion.findOne({
-        where: { 
-          usuarioId: usuarioId || 0,
-          publicacionId: pub.id 
-        }
+        where: { usuarioId, publicacionId: pub.id }
       });
       
       const pubJSON = pub.toJSON();
       pubJSON.miPuntuacion = valoracion ? valoracion.puntuacion : 0;
-      
       return pubJSON;
     }));
+
     res.render('index', { 
       publicaciones: publicacionesConValoracion, 
+      titulo: "Mi Perfil",
       nombreUsuario: req.session.nombreUsuario,
       usuarioId: usuarioId 
     });
-
   } catch (error) {
-    console.error('Error al cargar el feed:', error);
-    res.status(500).send('Error al cargar el feed');
+    console.error('Error en Perfil Personal:', error);
+    res.status(500).send('Error al cargar el perfil');
   }
 };
 
@@ -117,6 +140,7 @@ const eliminarPublicacion = async (req, res) => {
 module.exports = {
   mostrarFormulario,
   crearPublicacion,
-  obtenerPublicaciones,
+  obtenerFeedGlobal,
+  obtenerPerfilPersonal, 
   eliminarPublicacion
 };

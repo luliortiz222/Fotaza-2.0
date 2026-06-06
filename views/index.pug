@@ -11,12 +11,11 @@ html(lang="es")
         div.nav-logo
           a(href="/") FOTAZA
         div.nav-links
+          a(href="/") Feed 
           if nombreUsuario
-            span.user-badge ¡Hola, @#{nombreUsuario}!
+            a(href="/mi-perfil") Mi Perfil
             a.btn-logout(href="/api/usuarios/logout") Cerrar Sesión
-          else
-            a(href="/login") Iniciar Sesión
-            a(href="/registro") Registro
+            span.user-badge ¡Hola, @#{nombreUsuario}!
     
     main.container
       section.welcome-section

@@ -1,9 +1,16 @@
 const Valoracion = require('../models/Valoracion');
 
 const darLike = async (req, res) => {
+  if (!req.session.usuarioId) {
+    return res.status(401).json({ 
+      mensaje: 'Debes iniciar sesión para valorar.' 
+    });
+  }
+
   try {
     const { publicacionId, puntuacion } = req.body; 
-    const usuarioId = req.session.usuarioId || 1;
+    const usuarioId = req.session.usuarioId; 
+
     let valoracion = await Valoracion.findOne({
       where: { usuarioId, publicacionId }
     });
@@ -25,6 +32,4 @@ const darLike = async (req, res) => {
   }
 };
 
-module.exports = {
-  darLike
-};
+module.exports = { darLike };
