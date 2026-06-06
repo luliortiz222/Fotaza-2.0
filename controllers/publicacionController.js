@@ -1,5 +1,6 @@
 const Publicacion = require('../models/Publicacion');
 const Usuario = require('../models/Usuario');
+const Etiqueta = require('../models/Etiqueta');
 
 const mostrarFormulario = (req, res) => {
   //if (!req.session.usuarioId) {
@@ -14,23 +15,34 @@ const crearPublicacion = async (req, res) => {
       return res.status(400).render('crearPublicacion', { error: 'Por favor, selecciona una imagen válida.' });
     }
 
-    const { titulo, descripcion } = req.body;
+    const { titulo, descripcion, etiquetas } = req.body;
 
     if (!titulo) {
       return res.status(400).render('crearPublicacion', { error: 'El título es obligatorio.' });
     }
-    const usuarioIdReal = req.session.usuarioId || 1;;
+    const usuarioIdReal = req.session.usuarioId || 1;
     if (!usuarioIdReal) {
       return res.status(401).render('login', { error: 'Debes iniciar sesión para publicar.' });
     }
     const urlImagenRuta = `/uploads/${req.file.filename}`;
 
-    await Publicacion.create({
+    const nuevaPublicacion = await Publicacion.create({
       titulo,
       descripcion,
       urlImagen: urlImagenRuta,
       usuarioId: usuarioIdReal
     });
+
+    if (etiquetas) {
+      const nombresEtiquetas = etiquetas.split(',').map(e => e.trim()).filter(e => e !== "");
+      
+      for (const nombre of nombresEtiquetas) {
+        const [etiqueta] = await Etiqueta.findOrCreate({ 
+          where: { nombre: nombre.toLowerCase() }
+        });
+        await nuevaPublicacion.addEtiqueta(etiqueta); 
+      }
+    }
 
     console.log(`¡Nueva foto publicada con éxito por el usuario ID: ${usuarioIdReal}!`);
     return res.redirect('/'); 
