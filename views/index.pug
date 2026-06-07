@@ -26,6 +26,23 @@ block content
               )
               label(for=`star${i}-${pub.id}`) ★
 
+          if usuarioId && Number(usuarioId) === Number(pub.usuarioId)
+            .dropdown
+              input.dropdown-toggle(
+                type="checkbox"
+                id=`menu-${pub.id}`
+              )
+
+              label.dropdown-label(for=`menu-${pub.id}`) ⋮
+
+              .dropdown-menu
+                form(
+                  action=`/api/publicaciones/eliminar/${pub.id}`
+                  method="POST"
+                  onsubmit="return confirm('¿Seguro que deseas eliminar esta publicación?');"
+                )
+                  button.btn-delete(type="submit") Eliminar
+
           .comments-section
             h4 Comentarios
 
@@ -53,23 +70,6 @@ block content
               )
 
               button(type="submit") Publicar
-
-          if usuarioId && Number(usuarioId) === Number(pub.usuarioId)
-            .dropdown
-              input.dropdown-toggle(
-                type="checkbox"
-                id=`menu-${pub.id}`
-              )
-
-              label.dropdown-label(for=`menu-${pub.id}`) ⋮
-
-              .dropdown-menu
-                form(
-                  action=`/api/publicaciones/eliminar/${pub.id}`
-                  method="POST"
-                  onsubmit="return confirm('¿Seguro que deseas eliminar esta publicación?');"
-                )
-                  button.btn-delete(type="submit") Eliminar
 
     else
       p.no-pub No hay fotos todavía. ¡Sé el primero en publicar!

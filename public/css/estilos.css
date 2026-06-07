@@ -54,7 +54,12 @@ header {
 }
 
 .feed-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; width: 100%; }
-.pub-card { width: 100%; background: rgba(255, 255, 255, 0.3); border-radius: 20px; padding: 20px; backdrop-filter: blur(10px); }
+.pub-card { width: 100%;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 20px;
+  padding: 20px;
+  backdrop-filter: blur(10px);
+  position: relative; }
 .pub-card img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 12px; margin-bottom: 15px; }
 
 .btn-create {
@@ -248,7 +253,10 @@ button[type="submit"]:hover {
 
 
 .dropdown {
-  margin-top: 15px;
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  z-index: 10;
 }
 
 .dropdown-toggle {
@@ -257,13 +265,16 @@ button[type="submit"]:hover {
 
 .dropdown-label {
   cursor: pointer;
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   font-weight: bold;
+  color: var(--texto-principal);
 }
 
 .dropdown-menu {
   display: none;
-  margin-top: 10px;
+  position: absolute;
+  right: 0;
+  margin-top: 5px;
 }
 
 .dropdown-toggle:checked + .dropdown-label + .dropdown-menu {
