@@ -10,13 +10,12 @@ html(lang="es")
         .nav-logo: a(href="/") FOTAZA
         .nav-links
           a(href="/") Inicio
-          a(href="/api/publicaciones/crear") + Crear
+         
     
     main.container
       .form-container
         h2 Nueva Foto
         p.subtitle Comparte un momento especial
-        
         if error
           p(style="color: var(--color-accent); margin-bottom: 15px;")= error
 
@@ -40,6 +39,8 @@ html(lang="es")
             input#etiquetas(type="text" name="etiquetas" placeholder="ej: arte, viaje, amigos")
 
           button.btn-submit(type="submit") Publicar Foto
+
+      a.btn-create-fixed(href="/api/publicaciones/crear") +
 
     script.
       document.getElementById('imagen').addEventListener('change', function() {
