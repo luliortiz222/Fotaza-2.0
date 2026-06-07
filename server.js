@@ -42,6 +42,12 @@ app.use(session({
   cookie: { maxAge: 24 * 60 * 60 * 1000 } 
 }));
 
+app.use((req, res, next) => {
+  res.locals.nombreUsuario = req.session.nombreUsuario || null;
+  res.locals.usuarioId = req.session.usuarioId || null;
+  next();
+});
+
 //app.get('/', (req, res) => {
  // if (!req.session.usuarioId) {
  //   return res.redirect('/login');

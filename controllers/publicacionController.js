@@ -76,9 +76,7 @@ const obtenerFeedGlobal = async (req, res) => {
 
     res.render('index', { 
       publicaciones: publicacionesConValoracion, 
-      titulo: "Feed Global",
-      nombreUsuario: req.session.nombreUsuario,
-      usuarioId: usuarioId 
+      titulo: "Feed Global"
     });
   } catch (error) {
     console.error('Error en Feed Global:', error);

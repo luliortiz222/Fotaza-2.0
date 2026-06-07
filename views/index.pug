@@ -1,110 +1,134 @@
-doctype html
-html(lang="es")
-  head
-    meta(charset="UTF-8")
-    meta(name="viewport" content="width=device-width, initial-scale=1.0")
-    title Fotaza - Home
-    link(rel="stylesheet", href="/css/estilos.css") 
-  body
-    header
-      nav.navbar
-        div.nav-logo
-          a(href="/") FOTAZA
-        div.nav-links
-          a(href="/") Feed 
-          if nombreUsuario
-            a(href="/mi-perfil") Mi Perfil
-            a.btn-logout(href="/api/usuarios/logout") Cerrar Sesión
-            span.user-badge ¡Hola, @#{nombreUsuario}!
-    
-    main.container
-      section.welcome-section
-        h2 ¡Bienvenido a tu Feed!
-        p Descubre las fotos que la comunidad está compartiendo.
+extends layout
 
-      .feed-grid
-        each pub in publicaciones
-          .pub-card
-            img(src=pub.urlImagen, alt=pub.titulo)
-            .card-body
-              h3= pub.titulo
-              p= pub.descripcion
-              p.user-tag @#{pub.Usuario ? pub.Usuario.usuario : 'Anónimo'}
-              
-              .stars-container
-                - for (let i = 5; i >= 1; i--)
-                  input(type="radio" id=`star${i}-${pub.id}` name=`rating-${pub.id}` value=i checked=(pub.miPuntuacion === i))
-                  label(for=`star${i}-${pub.id}`) ★
-              
-              .comments-section
-                h4 Comentarios
-                if pub.Comentarios && pub.Comentarios.length > 0
-                  each com in pub.Comentarios
-                    .comment
-                      p #[strong @#{com.Usuario ? com.Usuario.usuario : 'Anónimo'}:] #{com.contenido}
-                else
-                  p.no-comments No hay comentarios todavía.
+block content
+  section.welcome-section
+    h2 ¡Bienvenido a tu Feed!
+    p Descubre las fotos que la comunidad está compartiendo.
 
-                form.comment-form
-                  input(type="hidden", name="publicacionId", value=pub.id)
-                  input(type="text", name="contenido", placeholder="Escribe un comentario...", required)
-                  button(type="submit") Publicar
+  .feed-grid
+    each pub in publicaciones
+      .pub-card
+        img(src=pub.urlImagen, alt=pub.titulo)
 
-              if usuarioId && Number(usuarioId) === Number(pub.usuarioId)
-                .dropdown
-                  input(type="checkbox" id=`menu-${pub.id}` class="dropdown-toggle")
-                  label(for=`menu-${pub.id}` class="dropdown-label") ⋮
-                  .dropdown-menu
-                    form(action=`/api/publicaciones/eliminar/${pub.id}`, method="POST", onsubmit="return confirm('¿Seguro que deseas eliminar esta publicación?');")
-                      button.btn-delete(type="submit") Eliminar
-        else
-          p.no-pub No hay fotos todavía. ¡Sé el primero en publicar!
+        .card-body
+          h3= pub.titulo
+          p= pub.descripcion
+          p.user-tag @#{pub.Usuario ? pub.Usuario.usuario : 'Anónimo'}
 
-      a.btn-create(href="/api/publicaciones/crear") +
+          .stars-container
+            - for (let i = 5; i >= 1; i--)
+              input(
+                type="radio"
+                id=`star${i}-${pub.id}`
+                name=`rating-${pub.id}`
+                value=i
+                checked=(pub.miPuntuacion === i)
+              )
+              label(for=`star${i}-${pub.id}`) ★
 
-    script.
-      document.querySelectorAll('.stars-container input').forEach(input => {
-        input.addEventListener('change', async (e) => {
-          const publicacionId = e.target.name.split('-')[1];
-          const puntuacion = e.target.value;
-          const container = e.target.closest('.pub-card');
+          .comments-section
+            h4 Comentarios
 
-          const existingMsg = container.querySelector('.temp-msg');
-          if (existingMsg) existingMsg.remove();
+            if pub.Comentarios && pub.Comentarios.length > 0
+              each com in pub.Comentarios
+                .comment
+                  p
+                    strong @#{com.Usuario ? com.Usuario.usuario : 'Anónimo'}:
+                    |  #{com.contenido}
+            else
+              p.no-comments No hay comentarios todavía.
 
-          try {
-            const response = await fetch('/api/valoraciones', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ publicacionId, puntuacion })
-            });
+            form.comment-form
+              input(
+                type="hidden"
+                name="publicacionId"
+                value=pub.id
+              )
 
-            const data = await response.json();
-            if (response.ok) {
-              const mensaje = document.createElement('p');
-              mensaje.className = 'temp-msg';
-              mensaje.innerText = `¡Has puntuado con ${puntuacion} estrellas!`;
-              mensaje.style.color = '#388e3c';
-              mensaje.style.fontWeight = 'bold';
-              container.querySelector('.stars-container').appendChild(mensaje);
-              setTimeout(() => mensaje.remove(), 3000);
-            }
-          } catch (error) { console.error('Error:', error); }
-        });
-      });
-      document.querySelectorAll('.comment-form').forEach(form => {
-        form.addEventListener('submit', async (e) => {
-          e.preventDefault();
-          const formData = new FormData(form);
-          const response = await fetch('/api/comentarios/crear', {
+              input(
+                type="text"
+                name="contenido"
+                placeholder="Escribe un comentario..."
+                required
+              )
+
+              button(type="submit") Publicar
+
+          if usuarioId && Number(usuarioId) === Number(pub.usuarioId)
+            .dropdown
+              input.dropdown-toggle(
+                type="checkbox"
+                id=`menu-${pub.id}`
+              )
+
+              label.dropdown-label(for=`menu-${pub.id}`) ⋮
+
+              .dropdown-menu
+                form(
+                  action=`/api/publicaciones/eliminar/${pub.id}`
+                  method="POST"
+                  onsubmit="return confirm('¿Seguro que deseas eliminar esta publicación?');"
+                )
+                  button.btn-delete(type="submit") Eliminar
+
+    else
+      p.no-pub No hay fotos todavía. ¡Sé el primero en publicar!
+
+  a.btn-create(href="/api/publicaciones/crear") +
+
+  script.
+    document.querySelectorAll('.stars-container input').forEach(input => {
+      input.addEventListener('change', async (e) => {
+        const publicacionId = e.target.name.split('-')[1];
+        const puntuacion = e.target.value;
+        const container = e.target.closest('.pub-card');
+
+        const existingMsg = container.querySelector('.temp-msg');
+        if (existingMsg) existingMsg.remove();
+
+        try {
+          const response = await fetch('/api/valoraciones', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-              contenido: formData.get('contenido'), 
-              publicacionId: formData.get('publicacionId') 
-            })
+            body: JSON.stringify({ publicacionId, puntuacion })
           });
-          if (response.ok) location.reload();
-          else alert('Error al publicar comentario');
-        });
+
+          if (response.ok) {
+            const mensaje = document.createElement('p');
+            mensaje.className = 'temp-msg';
+            mensaje.innerText = `¡Has puntuado con ${puntuacion} estrellas!`;
+            mensaje.style.color = '#388e3c';
+            mensaje.style.fontWeight = 'bold';
+
+            container.querySelector('.stars-container').appendChild(mensaje);
+
+            setTimeout(() => mensaje.remove(), 3000);
+          }
+        } catch (error) {
+          console.error('Error:', error);
+        }
       });
+    });
+
+    document.querySelectorAll('.comment-form').forEach(form => {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(form);
+
+        const response = await fetch('/api/comentarios/crear', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contenido: formData.get('contenido'),
+            publicacionId: formData.get('publicacionId')
+          })
+        });
+
+        if (response.ok) {
+          location.reload();
+        } else {
+          alert('Error al publicar comentario');
+        }
+      });
+    });

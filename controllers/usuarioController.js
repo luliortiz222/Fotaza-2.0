@@ -40,26 +40,24 @@ const registrarUsuario = async (req, res) => {
 const loginUsuario = async (req, res) => {
   try {
     const { email, password } = req.body;
-
-    if (!email || !password) {
-      return res.status(400).render('login', { error: 'Todos los campos son obligatorios.' });
-    }
+    if (!email || !password) return res.status(400).render('login', { error: 'Campos obligatorios.' });
 
     const usuario = await Usuario.findOne({ where: { email } });
-
-    if (usuario.password !== password) {
+    if (!usuario || usuario.password !== password) {
       return res.status(401).render('login', { error: 'Credenciales incorrectas.' });
     }
 
     req.session.usuarioId = usuario.id;
     req.session.nombreUsuario = usuario.usuario;
 
-    console.log(`¡@${usuario.usuario} inició sesión correctamente!`);
-    return res.redirect('/'); 
+    req.session.save(() => {
+      console.log(`¡@${usuario.usuario} inició sesión!`);
+      return res.redirect('/'); 
+    });
 
   } catch (error) {
     console.error('Error en loginUsuario:', error);
-    return res.status(500).render('login', { error: 'Hubo un error en el servidor.' });
+    return res.status(500).render('login', { error: 'Error en el servidor.' });
   }
 };
 

@@ -2,31 +2,65 @@ extends layout
 
 block content
   .form-container
-    h2 Crear una cuenta nueva 
+
+    h2 Crear una cuenta nueva
     p.subtitle Unite a la comunidad de Fotaza
+
     if error
-      .alert-error(style="background-color: #fee2e2; border: 1px solid #fca5a5; color: #991b1b; padding: 12px; border-radius: 12px; margin-bottom: 20px; text-align: center; font-weight: 500; font-size: 0.95rem;")
+      .alert-error
         p= error
+
     form(action="/api/usuarios" method="POST")
+
       .form-group
         label(for="nombre") Nombre Completo
-        input#nombre(type="text" name="nombre" placeholder="Ej: Valentina Espósito" required)
-      
+        input#nombre(
+          type="text"
+          name="nombre"
+          placeholder="Ej: Valentina Espósito"
+          required
+        )
+
       .form-group
         label(for="usuario") Nombre de Usuario
-        input#usuario(type="text" name="usuario" placeholder="Ej: valen_witch" required)
-      
+        input#usuario(
+          type="text"
+          name="usuario"
+          placeholder="Ej: valen_witch"
+          required
+        )
+
       .form-group
         label(for="email") Correo Electrónico
-        input#email(type="email" name="email" placeholder="valen@sanm.com" required)
-      
+        input#email(
+          type="email"
+          name="email"
+          placeholder="valen@sanm.com"
+          required
+        )
+
       .form-group
         label(for="password") Contraseña
-        div(style="display: flex; gap: 8px; align-items: center;")
-          input#password(type="password" name="password" placeholder="Entre 4 y 13 caracteres" required minlength="4" maxlength="13" style="flex: 1;")
-          button#togglePassword(type="button" style="background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.4); border-radius: 12px; padding: 14px; cursor: pointer; color: #312e81; font-weight: bold; font-size: 0.85rem; width: 75px;") Ver
-      button.btn-submit(type="submit") Registrarme
-    
-    p.form-footer ¿Ya tenés cuenta? 
+
+        .password-wrapper
+          input#password(
+            type="password"
+            name="password"
+            placeholder="Entre 4 y 13 caracteres"
+            required
+            minlength="4"
+            maxlength="13"
+          )
+
+          button#togglePassword.password-btn(
+            type="button"
+          ) Ver
+
+      button.btn-submit(type="submit")
+        | Registrarme
+
+    p.form-footer
+      | ¿Ya tenés cuenta?
       a(href="/login") Iniciá sesión acá
+
     script(src="/js/password-helper.js")
