@@ -15,16 +15,19 @@ block content
           p= pub.descripcion
           p.user-tag @#{pub.Usuario ? pub.Usuario.usuario : 'Anónimo'}
 
-          .stars-container
-            - for (let i = 5; i >= 1; i--)
-              input(
-                type="radio"
-                id=`star${i}-${pub.id}`
-                name=`rating-${pub.id}`
-                value=i
-                checked=(pub.miPuntuacion === i)
-              )
-              label(for=`star${i}-${pub.id}`) ★
+          if usuarioId
+            .stars-container
+              - for (let i = 5; i >= 1; i--)
+                input(
+                  type="radio"
+                  id=`star${i}-${pub.id}`
+                  name=`rating-${pub.id}`
+                  value=i
+                  checked=(pub.miPuntuacion === i)
+                )
+                label(for=`star${i}-${pub.id}`) ★
+          else
+            p.no-login-msg Inicia sesión para valorar esta publicación.
 
           if usuarioId && Number(usuarioId) === Number(pub.usuarioId)
             .dropdown
@@ -55,21 +58,24 @@ block content
             else
               p.no-comments No hay comentarios todavía.
 
-            form.comment-form
-              input(
-                type="hidden"
-                name="publicacionId"
-                value=pub.id
-              )
+            if usuarioId
+              form.comment-form
+                input(
+                  type="hidden"
+                  name="publicacionId"
+                  value=pub.id
+                )
 
-              input(
-                type="text"
-                name="contenido"
-                placeholder="Escribe un comentario..."
-                required
-              )
+                input(
+                  type="text"
+                  name="contenido"
+                  placeholder="Escribe un comentario..."
+                  required
+                )
 
-              button(type="submit") Publicar
+                button(type="submit") Publicar
+            else
+              p.no-login-msg Inicia sesión para comentar.
 
     else
       p.no-pub No hay fotos todavía. ¡Sé el primero en publicar!

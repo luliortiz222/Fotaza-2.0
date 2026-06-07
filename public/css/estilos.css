@@ -438,3 +438,13 @@ footer {
 
   box-shadow: 0 10px 30px rgba(0,0,0,.12);
 }
+
+.no-login-msg{
+  margin-top: 12px;
+  padding: 10px;
+  text-align: center;
+  font-style: italic;
+  background: rgba(255,255,255,.18);
+  border-radius: 12px;
+  color: var(--texto-secundario);
+}
