@@ -1,0 +1,25 @@
+extends layout
+
+block content
+  .colecciones-container
+    h1 Mis Colecciones
+
+    form.form-coleccion(action="/api/colecciones" method="POST")
+      input(
+        type="text"
+        name="nombre"
+        placeholder="Nombre de la colección"
+        required
+      )
+
+      button(type="submit") Crear colección
+
+    if colecciones && colecciones.length > 0
+      .colecciones-grid
+        each coleccion in colecciones
+          .coleccion-card
+            .icono 📁
+            h3= coleccion.nombre
+            p Colección personal
+    else
+      p.sin-colecciones No tienes colecciones creadas.

@@ -38,13 +38,18 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
   secret: process.env.SESSION_SECRET || 'secreto_temporal',
   resave: false,
-  saveUninitialized: false,
+  saveUninitialized: true,
   cookie: { maxAge: 24 * 60 * 60 * 1000 } 
 }));
 
 app.use((req, res, next) => {
   res.locals.nombreUsuario = req.session.nombreUsuario || null;
   res.locals.usuarioId = req.session.usuarioId || null;
+  next();
+});
+
+app.use((req, res, next) => {
+  console.log("SESSION GLOBAL:", req.session);
   next();
 });
 

@@ -47,13 +47,12 @@ const loginUsuario = async (req, res) => {
       return res.status(401).render('login', { error: 'Credenciales incorrectas.' });
     }
 
-    req.session.usuarioId = usuario.id;
-    req.session.nombreUsuario = usuario.usuario;
+  req.session.usuarioId = usuario.id;
+req.session.nombreUsuario = usuario.usuario;
 
-    req.session.save(() => {
-      console.log(`¡@${usuario.usuario} inició sesión!`);
-      return res.redirect('/'); 
-    });
+console.log("LOGIN OK:", req.session);
+
+return res.redirect('/');
 
   } catch (error) {
     console.error('Error en loginUsuario:', error);

@@ -6,23 +6,24 @@ const crearColeccion = async (req, res) => {
     const usuarioIdTemp = req.session.usuarioId || 1;
 
     if (!nombre) {
-      return res.status(400).json({ mensaje: 'El nombre de la colección es obligatorio.' });
+      return res.status(400).json({
+        mensaje: 'El nombre de la colección es obligatorio.'
+      });
     }
 
-    const nuevaColeccion = await Coleccion.create({
+    await Coleccion.create({
       nombre,
       descripcion,
       usuarioId: usuarioIdTemp
     });
 
-    res.status(201).json({
-      mensaje: '¡Colección creada con éxito!',
-      coleccion: nuevaColeccion
-    });
+    return res.redirect('/mis-colecciones');
 
   } catch (error) {
     console.error('Error en crearColeccion:', error);
-    res.status(500).json({ mensaje: 'Hubo un error al crear la colección.' });
+    res.status(500).json({
+      mensaje: 'Hubo un error al crear la colección.'
+    });
   }
 };
 
@@ -41,7 +42,27 @@ const obtenerMisColecciones = async (req, res) => {
   }
 };
 
+const mostrarColecciones = async (req, res) => {
+  try {
+
+    console.log("SESSION:", req.session);
+
+    const usuarioIdTemp = req.session.usuarioId;
+
+    const colecciones = await Coleccion.findAll({
+      where: { usuarioId: usuarioIdTemp }
+    });
+
+    res.render('misColecciones', { colecciones });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error al cargar colecciones');
+  }
+};
+
 module.exports = {
   crearColeccion,
-  obtenerMisColecciones
+  obtenerMisColecciones,
+  mostrarColecciones
 };
