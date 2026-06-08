@@ -3,8 +3,12 @@ const router = express.Router();
 const { 
     crearColeccion, 
     obtenerMisColecciones, 
-    mostrarColecciones} = require('../controllers/coleccionController');
+    mostrarColecciones,
+    agregarPublicacion
+} = require('../controllers/coleccionController');
 
-router.get('/', obtenerMisColecciones);
+router.get('/mis-colecciones', mostrarColecciones);
 router.post('/', crearColeccion);
+router.post('/agregar-publicacion', agregarPublicacion);
+
 module.exports = router;

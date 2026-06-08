@@ -1,10 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const publicacionController = require('../controllers/publicacionController');
-const Coleccion = require('../models/Coleccion');
+const coleccionController = require('../controllers/coleccionController'); // <-- 1. IMPORTAMOS TU CONTROLADOR DE COLECCIONES
 
 const verificarSesion = (req, res, next) => {
-
   console.log("=== VERIFICAR SESION ===");
   console.log(req.session);
 
@@ -22,19 +21,6 @@ router.get('/', publicacionController.obtenerFeedGlobal);
 
 router.get('/mi-perfil', verificarSesion, publicacionController.obtenerPerfilPersonal);
 
-router.get('/mis-colecciones', verificarSesion, async (req, res) => {
-  try {
-    const colecciones = await Coleccion.findAll({
-      where: { usuarioId: req.session.usuarioId }
-    });
-
-    console.log("colecciones encontradas:", colecciones.map(c => c.dataValues));
-
-    res.render('misColecciones', { colecciones });
-  } catch (error) {
-    console.error(error);
-    res.render('misColecciones', { colecciones: [] });
-  }
-});
+router.get('/mis-colecciones', verificarSesion, coleccionController.mostrarColecciones);
 
 module.exports = router;

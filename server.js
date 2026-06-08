@@ -15,6 +15,7 @@ const Valoracion = require('./models/Valoracion');
 const Seguidor = require('./models/Seguidor');
 const Notificacion = require('./models/Notificacion');
 const Coleccion = require('./models/Coleccion');
+const ColeccionPublicacion = require('./models/ColeccionPublicacion');
 
 const usuarioRoutes = require('./routes/usuarioRoutes');
 const publicacionRoutes = require('./routes/publicacionRoutes');
@@ -71,6 +72,26 @@ app.use('/api/colecciones', coleccionRoutes);
 app.use('/api/notificaciones', notificacionRoutes);
 app.use('/api/etiquetas', etiquetaRoutes);
 app.use('/', vistasRoutes);
+
+if (Coleccion && Publicacion && ColeccionPublicacion) {
+  if (!Coleccion.associations.publicaciones) {
+    Coleccion.belongsToMany(Publicacion, { 
+      through: ColeccionPublicacion, 
+      foreignKey: 'ColeccionId', 
+      otherKey: 'PublicacionId', 
+      as: 'publicaciones' 
+    });
+  }
+  if (!Publicacion.associations.colecciones) {
+    Publicacion.belongsToMany(Coleccion, { 
+      through: ColeccionPublicacion, 
+      foreignKey: 'PublicacionId', 
+      otherKey: 'ColeccionId', 
+      as: 'colecciones' 
+    });
+  }
+}
+
 const iniciarBaseDeDatos = async () => {
   try {
     await conectarDB();

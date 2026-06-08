@@ -1,4 +1,6 @@
 const Coleccion = require('../models/Coleccion');
+const Publicacion = require('../models/Publicacion');
+const ColeccionPublicacion = require('../models/ColeccionPublicacion');
 
 const crearColeccion = async (req, res) => {
   try {
@@ -44,25 +46,72 @@ const obtenerMisColecciones = async (req, res) => {
 
 const mostrarColecciones = async (req, res) => {
   try {
+    const usuarioIdTemp = req.session.usuarioId; 
 
-    console.log("SESSION:", req.session);
-
-    const usuarioIdTemp = req.session.usuarioId;
+    if (!Coleccion.associations.publicaciones) {
+      const Publicacion = require('../models/Publicacion');
+      const ColeccionPublicacion = require('../models/ColeccionPublicacion');
+      
+      Coleccion.belongsToMany(Publicacion, { 
+        through: ColeccionPublicacion,
+        foreignKey: 'ColeccionId',
+        otherKey: 'PublicacionId',
+        as: 'publicaciones'
+      });
+    }
 
     const colecciones = await Coleccion.findAll({
-      where: { usuarioId: usuarioIdTemp }
+      where: { usuarioId: usuarioIdTemp },
+      include: [
+        {
+          model: require('../models/Publicacion'),
+          as: 'publicaciones',
+          through: { attributes: [] }
+        }
+      ]
     });
+
+    console.log("=== DATOS ENVIADOS A PUG ===");
+    console.log(JSON.stringify(colecciones, null, 2));
 
     res.render('misColecciones', { colecciones });
 
   } catch (error) {
-    console.error(error);
+    console.error("ERROR AL RENDERIZAR VISTA:", error);
     res.status(500).send('Error al cargar colecciones');
+  }
+};
+
+const agregarPublicacion = async (req, res) => {
+  try {
+    const { coleccionId, publicacionId } = req.body;
+
+    const coleccion = await Coleccion.findByPk(coleccionId);
+    if (!coleccion) {
+      return res.status(404).send('Colección no encontrada');
+    }
+
+    const publicacion = await Publicacion.findByPk(publicacionId);
+    if (!publicacion) {
+      return res.status(404).send('Publicación no encontrada');
+    }
+
+    await ColeccionPublicacion.create({
+      ColeccionId: coleccionId,
+      PublicacionId: publicacionId
+    });
+
+    res.redirect('/mis-colecciones');
+
+  } catch (error) {
+    console.error("ERROR CRÍTICO EN AGREGAR:", error);
+    res.status(500).send('Error al agregar publicación');
   }
 };
 
 module.exports = {
   crearColeccion,
   obtenerMisColecciones,
-  mostrarColecciones
+  mostrarColecciones, 
+  agregarPublicacion
 };

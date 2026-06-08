@@ -274,7 +274,7 @@ button[type="submit"]:hover {
   display: none;
   position: absolute;
   right: 0;
-  margin-top: 5px;
+  margin-top: 8px;
 }
 
 .dropdown-toggle:checked + .dropdown-label + .dropdown-menu {
@@ -513,4 +513,193 @@ footer {
 .sin-colecciones{
     margin-top:30px;
     font-size:18px;
+}
+
+
+.dropdown-menu form select {
+    width: 100%;
+    padding: 10px 15px;
+    margin-bottom: 8px;
+
+    border: 1px solid rgba(255,255,255,.35);
+    border-radius: 14px;
+
+    background: rgba(255,255,255,.25);
+    backdrop-filter: blur(10px);
+
+    color: var(--texto-principal);
+    font-size: .95rem;
+    font-weight: 600;
+
+    outline: none;
+    cursor: pointer;
+
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    transition: .25s;
+}
+
+.dropdown-menu form select:hover,
+.dropdown-menu form select:focus {
+    background: rgba(255,255,255,.4);
+    border-color: rgba(99,102,241,.5);
+}
+
+.dropdown-menu form {
+    position: relative;
+}
+
+.dropdown-menu form::after {
+    content: "⌄";
+    position: absolute;
+    right: 15px;
+    top: 11px;
+    pointer-events: none;
+    color: var(--texto-principal);
+    font-size: 1rem;
+}
+
+
+.dropdown-menu form button {
+    margin-top: 4px;
+    padding: 10px;
+    border-radius: 14px;
+    font-size: .95rem;
+}
+
+.guardar-coleccion-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.btn-guardar {
+  background: #4338ca;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.dropdown-list {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: rgba(255,255,255,.95);
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0,0,0,.2);
+  margin-top: 5px;
+  padding: 0;
+  list-style: none;
+  z-index: 100;
+}
+
+.dropdown-list li {
+  width: 100%;
+}
+
+.dropdown-list li button {
+  width: 100%;
+  padding: 10px 15px;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.guardar-coleccion-dropdown:hover .dropdown-list {
+  display: block;
+}
+
+.save-menu summary {
+  list-style: none;
+}
+
+.save-menu summary::-webkit-details-marker {
+  display: none;
+}
+
+.btn-save {
+  display: block;
+  width: 130px;
+  text-align: center;
+  padding: 12px 20px;
+  border-radius: 18px;
+  background: linear-gradient(135deg,#4338ca,#6366f1);
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+  user-select: none;
+}
+
+.save-menu {
+  margin-top: 10px;
+}
+
+.save-option {
+  display: block;
+  width: 130px;
+  margin-top: 8px;
+  padding: 10px;
+  border: none;
+  border-radius: 12px;
+  background: rgba(255,255,255,.9);
+  color: var(--texto-principal);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.save-option:hover {
+  background: rgba(255,255,255,1);
+}
+
+
+
+.publicaciones-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 12px;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px dashed rgba(49, 46, 129, 0.15); }
+
+
+.coleccion-card .pub-card {
+    background: rgba(255, 255, 255, 0.6) !important;
+    border-radius: 14px !important;
+    padding: 10px !important;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05) !important;
+    transform: none !important; 
+}
+
+.coleccion-card .pub-card img {
+    width: 100% !important;
+    height: 110px !important;
+    object-fit: cover !important;
+    border-radius: 10px !important;
+    margin-bottom: 8px !important;
+}
+
+.coleccion-card .pub-card .card-body h3 {
+    font-size: 0.95rem !important;
+    font-weight: 700;
+    color: var(--texto-principal);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.coleccion-card .pub-card .card-body p {
+    font-size: 0.8rem !important; 
+    color: var(--texto-secundario);
+    line-height: 1.2;
+}
+
+.coleccion-card .pub-card .user-tag {
+    font-size: 0.75rem !important;
+    margin-bottom: 0 !important;
 }

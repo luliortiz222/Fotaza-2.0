@@ -2,6 +2,7 @@ const { DataTypes } = require('sequelize');
 const { sequelize } = require('../config/db');
 const Usuario = require('./Usuario');
 const Publicacion = require('./Publicacion');
+const ColeccionPublicacion = require('./ColeccionPublicacion'); // tu modelo intermedio
 
 const Coleccion = sequelize.define('Coleccion', {
   id: {
@@ -21,8 +22,18 @@ const Coleccion = sequelize.define('Coleccion', {
 Usuario.hasMany(Coleccion, { foreignKey: 'usuarioId', onDelete: 'CASCADE' });
 Coleccion.belongsTo(Usuario, { foreignKey: 'usuarioId' });
 
-const ColeccionPublicacion = sequelize.define('coleccion_publicacion', {}, { timestamps: false });
-Coleccion.belongsToMany(Publicacion, { through: ColeccionPublicacion });
-Publicacion.belongsToMany(Coleccion, { through: ColeccionPublicacion });
+Coleccion.belongsToMany(Publicacion, { 
+  through: ColeccionPublicacion,
+  foreignKey: 'ColeccionId',  
+  otherKey: 'PublicacionId',
+  as: 'publicaciones'     
+});
+
+Publicacion.belongsToMany(Coleccion, { 
+  through: ColeccionPublicacion,
+  foreignKey: 'PublicacionId',
+  otherKey: 'ColeccionId', 
+  as: 'colecciones'
+});
 
 module.exports = Coleccion;

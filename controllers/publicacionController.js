@@ -3,6 +3,7 @@ const Usuario = require('../models/Usuario');
 const Etiqueta = require('../models/Etiqueta');
 const Valoracion = require('../models/Valoracion');
 const Comentario = require('../models/Comentario');
+const Coleccion = require('../models/Coleccion');
 
 const mostrarFormulario = (req, res) => {
   //if (!req.session.usuarioId) {
@@ -57,27 +58,58 @@ const crearPublicacion = async (req, res) => {
 
 const obtenerFeedGlobal = async (req, res) => {
   try {
+
     const publicaciones = await Publicacion.findAll({
-      include: [Usuario, { model: Comentario, include: [Usuario] }],
+      include: [
+        Usuario,
+        {
+          model: Comentario,
+          include: [Usuario]
+        }
+      ],
       order: [['createdAt', 'DESC']]
     });
 
     const usuarioId = req.session.usuarioId;
-    
-    const publicacionesConValoracion = await Promise.all(publicaciones.map(async (pub) => {
-      const valoracion = usuarioId ? await Valoracion.findOne({
-        where: { usuarioId, publicacionId: pub.id }
-      }) : null;
-      
-      const pubJSON = pub.toJSON();
-      pubJSON.miPuntuacion = valoracion ? valoracion.puntuacion : 0;
-      return pubJSON;
-    }));
 
-    res.render('index', { 
-      publicaciones: publicacionesConValoracion, 
-      titulo: "Feed Global"
-    });
+    let colecciones = [];
+
+    if (usuarioId) {
+      colecciones = await Coleccion.findAll({
+        where: {
+          usuarioId: usuarioId
+        }
+      });
+    }
+
+    const publicacionesConValoracion = await Promise.all(
+      publicaciones.map(async (pub) => {
+
+        const valoracion = usuarioId
+          ? await Valoracion.findOne({
+              where: {
+                usuarioId,
+                publicacionId: pub.id
+              }
+            })
+          : null;
+
+        const pubJSON = pub.toJSON();
+        pubJSON.miPuntuacion = valoracion
+          ? valoracion.puntuacion
+          : 0;
+
+        return pubJSON;
+      })
+    );
+
+    res.render('index', {
+   publicaciones: publicacionesConValoracion,
+   colecciones,
+   usuarioId: req.session.usuarioId,
+   nombreUsuario: req.session.nombreUsuario,
+   titulo: 'Feed Global'
+});
   } catch (error) {
     console.error('Error en Feed Global:', error);
     res.status(500).send('Error al cargar el feed');
