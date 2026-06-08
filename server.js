@@ -8,7 +8,6 @@ const { conectarDB, sequelize } = require('./config/db');
 const Usuario = require('./models/Usuario');
 const Publicacion = require('./models/Publicacion');
 const Comentario = require('./models/Comentario');
-const Imagen = require('./models/Imagen');
 const Etiqueta = require('./models/Etiqueta');
 const PublicacionEtiqueta = require('./models/PublicacionEtiqueta');
 const Valoracion = require('./models/Valoracion');
