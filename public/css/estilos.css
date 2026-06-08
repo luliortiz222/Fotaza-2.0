@@ -703,3 +703,37 @@ footer {
     font-size: 0.75rem !important;
     margin-bottom: 0 !important;
 }
+
+.follow-container {
+  margin: 10px 0;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.btn-seguir {
+  background-color: #0095f6;
+  color: #ffffff;
+  border: none;
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-seguir:hover {
+  background-color: #1877f2;
+}
+
+.btn-seguir.siguiendo {
+  background-color: #f0f0f0;
+  color: #262626;
+  border: 1px solid #dbdbdb;
+}
+
+.btn-seguir.siguiendo:hover {
+  background-color: #fafafa;
+  border-color: #ed4956;
+  color: #ed4956;
+}

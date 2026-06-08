@@ -6,7 +6,18 @@ const Seguidor = sequelize.define('Seguidor', {}, {
   timestamps: true
 });
 
-Usuario.belongsToMany(Usuario, { as: 'Seguidos', through: Seguidor, foreignKey: 'seguidorId' });
-Usuario.belongsToMany(Usuario, { as: 'Seguidores', through: Seguidor, foreignKey: 'usuarioId' });
+Usuario.belongsToMany(Usuario, { 
+  as: 'Seguidos', 
+  through: Seguidor, 
+  foreignKey: 'seguidorId',
+  otherKey: 'usuarioId'
+});
+
+Usuario.belongsToMany(Usuario, { 
+  as: 'Seguidores', 
+  through: Seguidor, 
+  foreignKey: 'usuarioId',
+  otherKey: 'seguidorId'
+});
 
 module.exports = Seguidor;

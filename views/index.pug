@@ -15,6 +15,15 @@ block content
           p= pub.descripcion
           p.user-tag @#{pub.Usuario ? pub.Usuario.usuario : 'Anónimo'}
 
+          if usuarioId && pub.Usuario && Number(pub.Usuario.id) !== Number(usuarioId)
+            .follow-container
+              button.btn-seguir(
+                type="button"
+                data-usuario-id=pub.Usuario.id
+                class=pub.yaLoSigue ? 'siguiendo' : ''
+              )
+                = pub.yaLoSigue ? 'Dejar de seguir' : 'Seguir'
+
           if usuarioId
             .stars-container
               - for (let i = 5; i >= 1; i--)
@@ -34,20 +43,33 @@ block content
               input.dropdown-toggle(type="checkbox" id=`menu-${pub.id}`)
               label.dropdown-label(for=`menu-${pub.id}`) ⋮
               .dropdown-menu
+
                 if Number(usuarioId) === Number(pub.usuarioId)
-                  form(action=`/api/publicaciones/eliminar/${pub.id}` method="POST" onsubmit="return confirm('¿Seguro que deseas eliminar esta publicación?');")
+                  form(
+                    action=`/api/publicaciones/eliminar/${pub.id}`
+                    method="POST"
+                    onsubmit="return confirm('¿Seguro que deseas eliminar esta publicación?');"
+                  )
                     button.btn-delete(type="submit") Eliminar
 
                 if colecciones && colecciones.length > 0
                   details.save-menu
                     summary.btn-save Guardar
+
                     form(action="/api/colecciones/agregar-publicacion" method="POST")
                       input(type="hidden" name="publicacionId" value=pub.id)
+
                       each coleccion in colecciones
-                        button(type="submit" name="coleccionId" value=coleccion.id class="save-option")= coleccion.nombre
+                        button(
+                          type="submit"
+                          name="coleccionId"
+                          value=coleccion.id
+                          class="save-option"
+                        )= coleccion.nombre
 
           .comments-section
             h4 Comentarios
+
             if pub.Comentarios && pub.Comentarios.length > 0
               each com in pub.Comentarios
                 .comment
@@ -60,7 +82,12 @@ block content
             if usuarioId
               form.comment-form
                 input(type="hidden" name="publicacionId" value=pub.id)
-                input(type="text" name="contenido" placeholder="Escribe un comentario..." required)
+                input(
+                  type="text"
+                  name="contenido"
+                  placeholder="Escribe un comentario..."
+                  required
+                )
                 button(type="submit") Publicar
             else
               p.no-login-msg Inicia sesión para comentar.
@@ -68,26 +95,70 @@ block content
   a.btn-create(href="/api/publicaciones/crear") +
 
   script.
+    document.querySelectorAll('.btn-seguir').forEach(boton => {
+      boton.addEventListener('click', async (e) => {
+        const usuarioIdDestino = e.target.dataset.usuarioId;
+        const btn = e.target;
+
+        try {
+          const response = await fetch('/api/seguidores', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ usuarioId: usuarioIdDestino })
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            if (data.mensaje.includes('Comenzaste a seguir')) {
+              btn.textContent = 'Dejar de seguir';
+              btn.classList.add('siguiendo');
+            } else {
+              btn.textContent = 'Seguir';
+              btn.classList.remove('siguiendo');
+            }
+          } else {
+            alert(data.mensaje || 'Error al procesar el seguimiento.');
+          }
+        } catch (error) {
+          console.error('Error en la petición de seguimiento:', error);
+          alert('No se pudo conectar con el servidor.');
+        }
+      });
+    });
+
     document.querySelectorAll('.stars-container input').forEach(input => {
       input.addEventListener('change', async (e) => {
         const publicacionId = e.target.name.split('-')[1];
         const puntuacion = e.target.value;
         const container = e.target.closest('.pub-card');
+
         const existingMsg = container.querySelector('.temp-msg');
         if (existingMsg) existingMsg.remove();
+
         try {
           const response = await fetch('/api/valoraciones', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ publicacionId, puntuacion })
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              publicacionId,
+              puntuacion
+            })
           });
+
           if (response.ok) {
             const mensaje = document.createElement('p');
             mensaje.className = 'temp-msg';
             mensaje.innerText = `¡Has puntuado con ${puntuacion} estrellas!`;
             mensaje.style.color = '#388e3c';
             mensaje.style.fontWeight = 'bold';
+
             container.querySelector('.stars-container').appendChild(mensaje);
+
             setTimeout(() => mensaje.remove(), 3000);
           }
         } catch (error) {
@@ -99,15 +170,20 @@ block content
     document.querySelectorAll('.comment-form').forEach(form => {
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
+
         const formData = new FormData(form);
+
         const response = await fetch('/api/comentarios/crear', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json'
+          },
           body: JSON.stringify({
             contenido: formData.get('contenido'),
             publicacionId: formData.get('publicacionId')
           })
         });
+
         if (response.ok) {
           location.reload();
         } else {

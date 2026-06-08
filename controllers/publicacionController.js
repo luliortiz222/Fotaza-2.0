@@ -4,6 +4,7 @@ const Etiqueta = require('../models/Etiqueta');
 const Valoracion = require('../models/Valoracion');
 const Comentario = require('../models/Comentario');
 const Coleccion = require('../models/Coleccion');
+const Seguidor = require('../models/Seguidor');
 
 const mostrarFormulario = (req, res) => {
   //if (!req.session.usuarioId) {
@@ -83,25 +84,45 @@ const obtenerFeedGlobal = async (req, res) => {
     }
 
     const publicacionesConValoracion = await Promise.all(
-      publicaciones.map(async (pub) => {
+  publicaciones.map(async (pub) => {
 
-        const valoracion = usuarioId
-          ? await Valoracion.findOne({
-              where: {
-                usuarioId,
-                publicacionId: pub.id
-              }
-            })
-          : null;
+    const valoracion = usuarioId
+      ? await Valoracion.findOne({
+          where: {
+            usuarioId,
+            publicacionId: pub.id
+          }
+        })
+      : null;
 
-        const pubJSON = pub.toJSON();
-        pubJSON.miPuntuacion = valoracion
-          ? valoracion.puntuacion
-          : 0;
+    const pubJSON = pub.toJSON();
 
-        return pubJSON;
-      })
-    );
+    pubJSON.miPuntuacion = valoracion
+      ? valoracion.puntuacion
+      : 0;
+
+    if (
+      usuarioId &&
+      pubJSON.Usuario &&
+      Number(pubJSON.Usuario.id) !== Number(usuarioId)
+    ) {
+
+      const seguimiento = await Seguidor.findOne({
+        where: {
+          seguidorId: usuarioId,
+          usuarioId: pubJSON.Usuario.id
+        }
+      });
+
+      pubJSON.yaLoSigue = !!seguimiento;
+
+    } else {
+      pubJSON.yaLoSigue = false;
+    }
+
+    return pubJSON;
+  })
+);
 
     res.render('index', {
    publicaciones: publicacionesConValoracion,
