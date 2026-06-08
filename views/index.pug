@@ -5,92 +5,109 @@ block content
     h2 ¡Bienvenido a tu Feed!
     p Descubre las fotos que la comunidad está compartiendo.
 
-  .feed-grid
-    each pub in publicaciones
-      .pub-card
-        img(src=pub.urlImagen, alt=pub.titulo)
+  form(action="/" method="GET" class="search-form")
+    .search-group
+      input(
+        type="text"
+        name="buscar"
+        placeholder="🔍 Buscar publicaciones por título o descripción..."
+        value=buscar
+      )
+      button(type="submit") Buscar
+      if buscar
+        a.btn-clear(href="/") X
 
-        .card-body
-          h3= pub.titulo
-          p= pub.descripcion
-          p.user-tag @#{pub.Usuario ? pub.Usuario.usuario : 'Anónimo'}
+  if publicaciones && publicaciones.length > 0
+    .feed-grid
+      each pub in publicaciones
+        .pub-card
+          img(src=pub.urlImagen, alt=pub.titulo)
 
-          if usuarioId && pub.Usuario && Number(pub.Usuario.id) !== Number(usuarioId)
-            .follow-container
-              button.btn-seguir(
-                type="button"
-                data-usuario-id=pub.Usuario.id
-                class=pub.yaLoSigue ? 'siguiendo' : ''
-              )
-                = pub.yaLoSigue ? 'Dejar de seguir' : 'Seguir'
+          .card-body
+            h3= pub.titulo
+            p= pub.descripcion
+            p.user-tag @#{pub.Usuario ? pub.Usuario.usuario : 'Anónimo'}
 
-          if usuarioId
-            .stars-container
-              - for (let i = 5; i >= 1; i--)
-                input(
-                  type="radio"
-                  id=`star${i}-${pub.id}`
-                  name=`rating-${pub.id}`
-                  value=i
-                  checked=(pub.miPuntuacion === i)
+            if usuarioId && pub.Usuario && Number(pub.Usuario.id) !== Number(usuarioId)
+              .follow-container
+                button.btn-seguir(
+                  type="button"
+                  data-usuario-id=pub.Usuario.id
+                  class=pub.yaLoSigue ? 'siguiendo' : ''
                 )
-                label(for=`star${i}-${pub.id}`) ★
-          else
-            p.no-login-msg Inicia sesión para valorar esta publicación.
-
-          if usuarioId && (Number(usuarioId) === Number(pub.usuarioId) || (colecciones && colecciones.length > 0))
-            .dropdown
-              input.dropdown-toggle(type="checkbox" id=`menu-${pub.id}`)
-              label.dropdown-label(for=`menu-${pub.id}`) ⋮
-              .dropdown-menu
-
-                if Number(usuarioId) === Number(pub.usuarioId)
-                  form(
-                    action=`/api/publicaciones/eliminar/${pub.id}`
-                    method="POST"
-                    onsubmit="return confirm('¿Seguro que deseas eliminar esta publicación?');"
-                  )
-                    button.btn-delete(type="submit") Eliminar
-
-                if colecciones && colecciones.length > 0
-                  details.save-menu
-                    summary.btn-save Guardar
-
-                    form(action="/api/colecciones/agregar-publicacion" method="POST")
-                      input(type="hidden" name="publicacionId" value=pub.id)
-
-                      each coleccion in colecciones
-                        button(
-                          type="submit"
-                          name="coleccionId"
-                          value=coleccion.id
-                          class="save-option"
-                        )= coleccion.nombre
-
-          .comments-section
-            h4 Comentarios
-
-            if pub.Comentarios && pub.Comentarios.length > 0
-              each com in pub.Comentarios
-                .comment
-                  p
-                    strong @#{com.Usuario ? com.Usuario.usuario : 'Anónimo'}:
-                    |  #{com.contenido}
-            else
-              p.no-comments No hay comentarios todavía.
+                  = pub.yaLoSigue ? 'Dejar de seguir' : 'Seguir'
 
             if usuarioId
-              form.comment-form
-                input(type="hidden" name="publicacionId" value=pub.id)
-                input(
-                  type="text"
-                  name="contenido"
-                  placeholder="Escribe un comentario..."
-                  required
-                )
-                button(type="submit") Publicar
+              .stars-container
+                - for (let i = 5; i >= 1; i--)
+                  input(
+                    type="radio"
+                    id=`star${i}-${pub.id}`
+                    name=`rating-${pub.id}`
+                    value=i
+                    checked=(pub.miPuntuacion === i)
+                  )
+                  label(for=`star${i}-${pub.id}`) ★
             else
-              p.no-login-msg Inicia sesión para comentar.
+              p.no-login-msg Inicia sesión para valorar esta publicación.
+
+            if usuarioId && (Number(usuarioId) === Number(pub.usuarioId) || (colecciones && colecciones.length > 0))
+              .dropdown
+                input.dropdown-toggle(type="checkbox" id=`menu-${pub.id}`)
+                label.dropdown-label(for=`menu-${pub.id}`) ⋮
+                .dropdown-menu
+
+                  if Number(usuarioId) === Number(pub.usuarioId)
+                    form(
+                      action=`/api/publicaciones/eliminar/${pub.id}`
+                      method="POST"
+                      onsubmit="return confirm('¿Seguro que deseas eliminar esta publicación?');"
+                    )
+                      button.btn-delete(type="submit") Eliminar
+
+                  if colecciones && colecciones.length > 0
+                    details.save-menu
+                      summary.btn-save Guardar
+
+                      form(action="/api/colecciones/agregar-publicacion" method="POST")
+                        input(type="hidden" name="publicacionId" value=pub.id)
+
+                        each coleccion in colecciones
+                          button(
+                            type="submit"
+                            name="coleccionId"
+                            value=coleccion.id
+                            class="save-option"
+                          )= coleccion.nombre
+
+            .comments-section
+              h4 Comentarios
+
+              if pub.Comentarios && pub.Comentarios.length > 0
+                each com in pub.Comentarios
+                  .comment
+                    p
+                      strong @#{com.Usuario ? com.Usuario.usuario : 'Anónimo'}:
+                      |  #{com.contenido}
+              else
+                p.no-comments No hay comentarios todavía.
+
+              if usuarioId
+                form.comment-form
+                  input(type="hidden" name="publicacionId" value=pub.id)
+                  input(
+                    type="text"
+                    name="contenido"
+                    placeholder="Escribe un comentario..."
+                    required
+                  )
+                  button(type="submit") Publicar
+              else
+                p.no-login-msg Inicia sesión para comentar.
+  else
+    .no-results-container
+      p No se encontraron publicaciones que coincidan con la búsqueda.
+      a.btn-back-feed(href="/") Volver al Feed completo
 
   a.btn-create(href="/api/publicaciones/crear") +
 

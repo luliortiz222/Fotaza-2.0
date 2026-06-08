@@ -1,3 +1,4 @@
+const { Op } = require('sequelize'); 
 const Publicacion = require('../models/Publicacion');
 const Usuario = require('../models/Usuario');
 const Etiqueta = require('../models/Etiqueta');
@@ -7,9 +8,9 @@ const Coleccion = require('../models/Coleccion');
 const Seguidor = require('../models/Seguidor');
 
 const mostrarFormulario = (req, res) => {
-  //if (!req.session.usuarioId) {
- //   return res.redirect('/login');
- // }
+  // if (!req.session.usuarioId) {
+  //   return res.redirect('/login');
+  // }
   res.render('crearPublicacion');
 };
 
@@ -59,8 +60,24 @@ const crearPublicacion = async (req, res) => {
 
 const obtenerFeedGlobal = async (req, res) => {
   try {
+    const { buscar } = req.query;
+
+    let filtroWhere = {};
+    if (buscar) {
+      filtroWhere = {
+        [Op.or]: [
+          {
+            titulo: { [Op.iLike]: `%${buscar}%` } 
+          },
+          {
+            descripcion: { [Op.iLike]: `%${buscar}%` }
+          }
+        ]
+      };
+    }
 
     const publicaciones = await Publicacion.findAll({
+      where: filtroWhere,
       include: [
         Usuario,
         {
@@ -72,7 +89,6 @@ const obtenerFeedGlobal = async (req, res) => {
     });
 
     const usuarioId = req.session.usuarioId;
-
     let colecciones = [];
 
     if (usuarioId) {
@@ -84,53 +100,47 @@ const obtenerFeedGlobal = async (req, res) => {
     }
 
     const publicacionesConValoracion = await Promise.all(
-  publicaciones.map(async (pub) => {
+      publicaciones.map(async (pub) => {
+        const valoracion = usuarioId
+          ? await Valoracion.findOne({
+              where: {
+                usuarioId,
+                publicacionId: pub.id
+              }
+            })
+          : null;
 
-    const valoracion = usuarioId
-      ? await Valoracion.findOne({
-          where: {
-            usuarioId,
-            publicacionId: pub.id
-          }
-        })
-      : null;
+        const pubJSON = pub.toJSON();
 
-    const pubJSON = pub.toJSON();
+        pubJSON.miPuntuacion = valoracion ? valoracion.puntuacion : 0;
 
-    pubJSON.miPuntuacion = valoracion
-      ? valoracion.puntuacion
-      : 0;
+        if (usuarioId && pubJSON.Usuario && Number(pubJSON.Usuario.id) !== Number(usuarioId)) {
+          const seguimiento = await Seguidor.findOne({
+            where: {
+              seguidorId: usuarioId,
+              usuarioId: pubJSON.Usuario.id
+            }
+          });
 
-    if (
-      usuarioId &&
-      pubJSON.Usuario &&
-      Number(pubJSON.Usuario.id) !== Number(usuarioId)
-    ) {
-
-      const seguimiento = await Seguidor.findOne({
-        where: {
-          seguidorId: usuarioId,
-          usuarioId: pubJSON.Usuario.id
+          pubJSON.yaLoSigue = !!seguimiento;
+        } else {
+          pubJSON.yaLoSigue = false;
         }
-      });
 
-      pubJSON.yaLoSigue = !!seguimiento;
+        return pubJSON;
+      })
+    );
 
-    } else {
-      pubJSON.yaLoSigue = false;
-    }
-
-    return pubJSON;
-  })
-);
+    console.log(`=== BUSCADOR === Término: "${buscar || 'Ninguno'}". Encontradas: ${publicacionesConValoracion.length}`);
 
     res.render('index', {
-   publicaciones: publicacionesConValoracion,
-   colecciones,
-   usuarioId: req.session.usuarioId,
-   nombreUsuario: req.session.nombreUsuario,
-   titulo: 'Feed Global'
-});
+      publicaciones: publicacionesConValoracion,
+      colecciones,
+      buscar, 
+      usuarioId: req.session.usuarioId,
+      nombreUsuario: req.session.nombreUsuario,
+      titulo: 'Feed Global'
+    });
   } catch (error) {
     console.error('Error en Feed Global:', error);
     res.status(500).send('Error al cargar el feed');

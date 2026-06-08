@@ -103,18 +103,26 @@ input[type="text"], input[type="email"], input[type="password"], textarea {
 
 .welcome-section {
   text-align: center;
-  margin-bottom: 30px;
+  margin: 0 auto 30px auto;
+  background-color: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(4px);
+  border-radius: 50px;
+  padding: 15px 35px;
+  
+  width: fit-content;
+  max-width: 90%;
 }
 
 .welcome-section h2 {
   font-size: 2rem;
-  margin-bottom: 8px;
+  margin-top: 0;
+  margin-bottom: 6px;
 }
 
 .welcome-section p {
   color: var(--texto-secundario);
+  margin: 0;
 }
-
 .pub-card {
   transition: all 0.3s ease;
 }
@@ -833,4 +841,61 @@ footer {
     padding: 30px;
     color: var(--texto-secundario);
     border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.search-form {
+  margin: 15px auto;
+  width: 85%;          
+  max-width: 480px;    
+  display: flex;
+  justify-content: center;
+}
+
+.search-group {
+  display: flex;
+  width: 100%;         
+  gap: 8px;            
+}
+
+.search-group input[type="text"] {
+  flex: 1;             
+  min-width: 150px;    
+  padding: 8px 12px;   
+  border: 1.5px solid #ccc;
+  border-radius: 6px;  
+  font-size: 14px;     
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.search-group input[type="text"]:focus {
+  border-color: #6f52ed; 
+}
+
+.search-group button {
+  padding: 8px 14px;
+  background-color: #5c3be6; 
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+  white-space: nowrap; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-clear {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 10px;
+  background-color: #ff4d4d;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: bold;
 }
