@@ -48,10 +48,11 @@ const mostrarColecciones = async (req, res) => {
   try {
     const usuarioIdTemp = req.session.usuarioId; 
 
+    const Publicacion = require('../models/Publicacion');
+    const ColeccionPublicacion = require('../models/ColeccionPublicacion');
+    const Usuario = require('../models/Usuario'); 
+
     if (!Coleccion.associations.publicaciones) {
-      const Publicacion = require('../models/Publicacion');
-      const ColeccionPublicacion = require('../models/ColeccionPublicacion');
-      
       Coleccion.belongsToMany(Publicacion, { 
         through: ColeccionPublicacion,
         foreignKey: 'ColeccionId',
@@ -59,18 +60,29 @@ const mostrarColecciones = async (req, res) => {
         as: 'publicaciones'
       });
     }
+    if (!Publicacion.associations.Usuario) {
+      Publicacion.belongsTo(Usuario, {
+        foreignKey: 'usuarioId'
+      });
+    }
 
     const colecciones = await Coleccion.findAll({
       where: { usuarioId: usuarioIdTemp },
       include: [
         {
-          model: require('../models/Publicacion'),
+          model: Publicacion,
           as: 'publicaciones',
-          through: { attributes: [] }
+          through: { attributes: [] },
+          include: [
+            {
+              model: Usuario,
+              as: 'Usuario',
+              attributes: ['id', 'usuario'] 
+            }
+          ]
         }
       ]
     });
-
     console.log("=== DATOS ENVIADOS A PUG ===");
     console.log(JSON.stringify(colecciones, null, 2));
 
