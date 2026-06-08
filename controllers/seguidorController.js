@@ -1,22 +1,30 @@
 const Seguidor = require('../models/Seguidor');
 const Usuario = require('../models/Usuario');
+const Notificacion = require('../models/Notificacion');
 
 const alternarSeguimiento = async (req, res) => {
   try {
     const { seguidoId } = req.body;
-    const seguidorIdTemp = req.session.usuarioId || 1;
+    const seguidorIdTemp = req.session.usuarioId;
 
-    if (seguidoId === seguidorIdTemp) {
-      return res.status(400).json({ mensaje:'No puedes seguirte a ti mismo.' });
+    if (seguidoId == seguidorIdTemp) {
+      return res.status(400).json({
+        mensaje: 'No puedes seguirte a ti mismo.'
+      });
     }
 
     const yaLoSigue = await Seguidor.findOne({
-      where: { seguidorId: seguidorIdTemp, seguidoId }
+      where: {
+        seguidorId: seguidorIdTemp,
+        seguidoId
+      }
     });
 
     if (yaLoSigue) {
       await yaLoSigue.destroy();
-      return res.status(200).json({ mensaje:'Dejaste de seguir a este usuario.' });
+      return res.json({
+        mensaje: 'Dejaste de seguir a este usuario.'
+      });
     }
 
     await Seguidor.create({
@@ -24,11 +32,23 @@ const alternarSeguimiento = async (req, res) => {
       seguidoId
     });
 
-    res.status(201).json({ mensaje:'¡Comenzaste a seguir a este usuario!' });
+    const seguidor = await Usuario.findByPk(seguidorIdTemp);
+
+    await Notificacion.create({
+      usuarioId: seguidoId,
+      tipo: 'seguimiento',
+      mensaje: `${seguidor.usuario} comenzó a seguirte.`
+    });
+
+    res.json({
+      mensaje: '¡Comenzaste a seguir a este usuario!'
+    });
 
   } catch (error) {
-    console.error('Error en alternarSeguimiento:', error);
-    res.status(500).json({ mensaje: 'Hubo un error al procesar el seguimiento.' });
+    console.error(error);
+    res.status(500).json({
+      mensaje: 'Error al seguir usuario.'
+    });
   }
 };
 

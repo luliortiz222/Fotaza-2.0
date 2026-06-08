@@ -1,0 +1,20 @@
+extends layout
+
+block content
+
+  .colecciones-container
+    h1 Mis Notificaciones
+
+    if notificaciones.length > 0
+
+      each n in notificaciones
+        .coleccion-card
+          h3= n.mensaje
+
+          if n.leido
+            p ✔ Leída
+          else
+            p 🔔 Nueva
+
+    else
+      p.sin-colecciones No tienes notificaciones.

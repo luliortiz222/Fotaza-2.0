@@ -2,17 +2,22 @@ const Notificacion = require('../models/Notificacion');
 
 const obtenerMisNotificaciones = async (req, res) => {
   try {
-    const usuarioIdTemp = req.session.usuarioId || 1;
+    const usuarioId = req.session.usuarioId;
 
     const notificaciones = await Notificacion.findAll({
-      where: { usuarioId: usuarioIdTemp },
-      order: [['createdAt', 'DESC']] 
+      where: {
+        usuarioId
+      },
+      order: [['createdAt', 'DESC']]
     });
 
-    res.status(200).json(notificaciones);
+    res.render('notificaciones', {
+      notificaciones
+    });
+
   } catch (error) {
-    console.error('Error en obtenerMisNotificaciones:', error);
-    res.status(500).json({ mensaje: 'Hubo un error al obtener las notificaciones.' });
+    console.error(error);
+    res.status(500).send('Error al cargar notificaciones');
   }
 };
 

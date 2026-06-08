@@ -9,22 +9,22 @@ const Usuario = sequelize.define('Usuario', {
   },
   nombre: {
     type: DataTypes.STRING,
-    allowNull: false /*Obligatorio*/
+    allowNull: false
   },
   usuario: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true, 
+    unique: true,
     validate: {
-      len: [3, 30] 
+      len: [3, 30]
     }
   },
   email: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true, /* No se pueden registrar dos personas con el mismo email*/
+    unique: true,
     validate: {
-      isEmail: true /*Valida que tenga formato de mail real*/
+      isEmail: true
     }
   },
   password: {
@@ -32,8 +32,8 @@ const Usuario = sequelize.define('Usuario', {
     allowNull: false
   }
 }, {
-  tableName: 'usuarios', /* Nombre que va a tener la tabla*/
-  timestamps: true 
+  tableName: 'usuarios',
+  timestamps: true
 });
 
 module.exports = Usuario;
