@@ -4,19 +4,31 @@ const obtenerMisNotificaciones = async (req, res) => {
   try {
     const usuarioId = req.session.usuarioId;
 
+    if (!usuarioId) {
+      return res.redirect('/login');
+    }
+
     const notificaciones = await Notificacion.findAll({
-      where: {
-        usuarioId
-      },
-      order: [['createdAt', 'DESC']]
+      where: { usuarioId: usuarioId },
+      order: [['createdAt', 'DESC']],
+      raw: true 
     });
+
+    Notificacion.update(
+      { leido: true },
+      { where: { usuarioId: usuarioId, leido: false } }
+    ).then(([filas]) => {
+      if (filas > 0) {
+        console.log(`\n=== [DB BACKGROUND UPDATE] === ${filas} notificaciones pasadas a leídas para el próximo clic.`);
+      }
+    }).catch(err => console.error("Error en update de fondo:", err));
 
     res.render('notificaciones', {
       notificaciones
     });
 
   } catch (error) {
-    console.error(error);
+    console.error("ERROR GRAVE EN NOTIFICACIONES:", error);
     res.status(500).send('Error al cargar notificaciones');
   }
 };

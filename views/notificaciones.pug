@@ -2,19 +2,25 @@ extends layout
 
 block content
 
-  .colecciones-container
+  .notifications-container
     h1 Mis Notificaciones
 
     if notificaciones.length > 0
+      .notifications-list
+        each n in notificaciones
+          .notification-card(class=n.leido ? 'leida' : 'nueva')
+            
+            .notification-content
+              h3.notification-msg= n.mensaje
+              if n.createdAt
+                span.notification-time
+                  |#{new Date(n.createdAt).toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' })}
 
-      each n in notificaciones
-        .coleccion-card
-          h3= n.mensaje
-
-          if n.leido
-            p ✔ Leída
-          else
-            p 🔔 Nueva
+            .notification-status
+              if n.leido
+                p.status-read ✔ Leída
+              else
+                p.status-new 🔔 Nueva
 
     else
-      p.sin-colecciones No tienes notificaciones.
+      p.no-notifications No tienes notificaciones por el momento.

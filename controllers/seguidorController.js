@@ -21,7 +21,19 @@ const alternarSeguimiento = async (req, res) => {
     });
 
     if (yaLoSigue) {
+      const seguidor = await Usuario.findByPk(seguidorIdTemp);
+
       await yaLoSigue.destroy();
+      console.log("Seguimiento eliminado de la Base de Datos");
+
+      if (seguidor) {
+        await Notificacion.create({
+          usuarioId: usuarioId,
+          tipo: 'desvincular',
+          mensaje: `@${seguidor.usuario} te dejó de seguir.`
+        });
+        console.log("Notificación de 'Dejó de seguir' creada.");
+      }
 
       return res.json({
         mensaje: 'Dejaste de seguir a este usuario.'
@@ -29,6 +41,7 @@ const alternarSeguimiento = async (req, res) => {
     }
 
     await Seguidor.create({
+      sidebar: false,
       seguidorId: seguidorIdTemp,
       usuarioId: usuarioId
     });
@@ -42,7 +55,7 @@ const alternarSeguimiento = async (req, res) => {
     await Notificacion.create({
       usuarioId: usuarioId,
       tipo: 'seguimiento',
-      mensaje: `${seguidor.usuario} comenzó a seguirte.`
+      mensaje: `@${seguidor.usuario} comenzó a seguirte.`
     });
 
     console.log("Notificación creada");

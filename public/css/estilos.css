@@ -737,3 +737,100 @@ footer {
   border-color: #ed4956;
   color: #ed4956;
 }
+
+.notifications-container {
+    width: 100%;
+    max-width: 650px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.notifications-container h1 {
+    font-size: 2.2rem;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 30px;
+    color: var(--texto-principal);
+}
+
+.notifications-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+}
+
+.notification-card {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.3); 
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 20px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.notification-card.nueva {
+    border-left: 5px solid var(--texto-secundario);
+    background: rgba(255, 255, 255, 0.4); 
+}
+
+.notification-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+}
+
+.notification-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    text-align: left;
+}
+
+.notification-msg {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--texto-principal);
+    margin: 0;
+    line-height: 1.4;
+}
+
+.notification-time {
+    font-size: 0.85rem;
+    color: var(--texto-secundario);
+    font-weight: 600;
+    opacity: 0.8;
+}
+
+.notification-status p {
+    margin: 0;
+    font-size: 0.9rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.status-new {
+    color: #ea580c; 
+}
+
+.status-read {
+    color: #16a34a;
+    opacity: 0.7;
+}
+
+.no-notifications {
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.22);
+    backdrop-filter: blur(12px);
+    border-radius: 24px;
+    padding: 30px;
+    color: var(--texto-secundario);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+}

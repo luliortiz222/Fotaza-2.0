@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const publicacionController = require('../controllers/publicacionController');
-const coleccionController = require('../controllers/coleccionController'); // <-- 1. IMPORTAMOS TU CONTROLADOR DE COLECCIONES
+const coleccionController = require('../controllers/coleccionController');
+const notificacionController = require('../controllers/notificacionController');
 
 const verificarSesion = (req, res, next) => {
   console.log("=== VERIFICAR SESION ===");
@@ -22,5 +23,7 @@ router.get('/', publicacionController.obtenerFeedGlobal);
 router.get('/mi-perfil', verificarSesion, publicacionController.obtenerPerfilPersonal);
 
 router.get('/mis-colecciones', verificarSesion, coleccionController.mostrarColecciones);
+
+router.get('/notificaciones', verificarSesion, notificacionController.obtenerMisNotificaciones);
 
 module.exports = router;

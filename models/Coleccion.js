@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize');
 const { sequelize } = require('../config/db');
 const Usuario = require('./Usuario');
 const Publicacion = require('./Publicacion');
-const ColeccionPublicacion = require('./ColeccionPublicacion'); // tu modelo intermedio
+const ColeccionPublicacion = require('./ColeccionPublicacion'); 
 
 const Coleccion = sequelize.define('Coleccion', {
   id: {
