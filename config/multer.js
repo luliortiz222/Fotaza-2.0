@@ -12,11 +12,10 @@ cloudinary.config({
 
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
-  params: {
-    folder: 'fotaza_uploads', 
-    allowed_formats: ['jpg', 'png', 'jpeg', 'webp'],
-    transformation: [{ width: 1000, height: 1000, crop: 'limit' }]
-  }
+  params: async (req, file) => ({
+    folder: 'fotaza_uploads',
+    format: 'jpg'
+  })
 });
 
 const fileFilter = (req, file, cb) => {
