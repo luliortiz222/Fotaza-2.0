@@ -29,10 +29,12 @@ const fileFilter = (req, file, cb) => {
   cb(new Error('Error: El archivo debe ser una imagen válida (jpeg, jpg, png o webp)'));
 };
 
-const upload = multer({ 
+const upload = multer({
   storage: storage,
   fileFilter: fileFilter,
-  limits: { fileSize: 5 * 1024 * 1024 } 
+  limits: { fileSize: 5 * 1024 * 1024 }
 });
+
+console.log("===== MULTER NUEVO CARGADO =====");
 
 module.exports = upload;
