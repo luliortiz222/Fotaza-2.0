@@ -10,6 +10,16 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
+cloudinary.api.ping()
+  .then(result => {
+    console.log("CLOUDINARY OK");
+    console.log(result);
+  })
+  .catch(error => {
+    console.error("CLOUDINARY ERROR");
+    console.error(error);
+  });
+
 console.log("===== CLOUDINARY CONFIG =====");
 console.log("CLOUD_NAME:", process.env.CLOUDINARY_CLOUD_NAME);
 console.log("API_KEY:", process.env.CLOUDINARY_API_KEY);
