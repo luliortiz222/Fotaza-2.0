@@ -50,8 +50,7 @@ block content
                   label(for=`star${i}-${pub.id}`) ★
             else
               p.no-login-msg Inicia sesión para valorar esta publicación.
-
-            if usuarioId && (Number(usuarioId) === Number(pub.usuarioId) || (colecciones && colecciones.length > 0))
+            if usuarioId
               .pub-options-wrapper
                 input.dropdown-toggle(type="checkbox" id=`menu-${pub.id}`)
                 label.dropdown-label(for=`menu-${pub.id}`) ⋮
@@ -65,11 +64,11 @@ block content
                     )
                       button.btn-delete(type="submit") Eliminar
 
-                  if colecciones && colecciones.length > 0
-                    .save-menu-item
-                      span.btn-save ❮ Guardar
-                      
-                      .submenu-colecciones
+                  .save-menu-item
+                    span.btn-save ❮ Guardar
+                    
+                    .submenu-colecciones
+                      if colecciones && colecciones.length > 0
                         form(action="/api/colecciones/agregar-publicacion" method="POST")
                           input(type="hidden" name="publicacionId" value=pub.id)
                           each coleccion in colecciones
@@ -79,6 +78,8 @@ block content
                               value=coleccion.id
                               class="save-option"
                             )= coleccion.nombre
+                      else
+                        span.save-option-disabled Crea una colección en tu perfil
 
             .comments-section
               h4 Comentarios
