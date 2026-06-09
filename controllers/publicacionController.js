@@ -16,20 +16,34 @@ const mostrarFormulario = (req, res) => {
 
 const crearPublicacion = async (req, res) => {
   try {
+
+    console.log("BODY:", req.body);
+    console.log("FILE:", req.file);
+
     if (!req.file) {
-      return res.status(400).render('crearPublicacion', { error: 'Por favor, selecciona una imagen válida.' });
+      return res.status(400).render('crearPublicacion', {
+        error: 'Por favor, selecciona una imagen válida.'
+      });
     }
 
     const { titulo, descripcion, etiquetas } = req.body;
 
     if (!titulo) {
-      return res.status(400).render('crearPublicacion', { error: 'El título es obligatorio.' });
+      return res.status(400).render('crearPublicacion', {
+        error: 'El título es obligatorio.'
+      });
     }
+
     const usuarioIdReal = req.session.usuarioId || 1;
+
     if (!usuarioIdReal) {
-      return res.status(401).render('login', { error: 'Debes iniciar sesión para publicar.' });
+      return res.status(401).render('login', {
+        error: 'Debes iniciar sesión para publicar.'
+      });
     }
-    const urlImagenRuta = `/uploads/${req.file.filename}`;
+
+    
+    const urlImagenRuta = req.file.path; /*Cloudinary va a devolver la URL en req.file.path*/
 
     const nuevaPublicacion = await Publicacion.create({
       titulo,
@@ -39,24 +53,38 @@ const crearPublicacion = async (req, res) => {
     });
 
     if (etiquetas) {
-      const nombresEtiquetas = etiquetas.split(',').map(e => e.trim()).filter(e => e !== "");
-      
+      const nombresEtiquetas = etiquetas
+        .split(',')
+        .map(e => e.trim())
+        .filter(e => e !== "");
+
       for (const nombre of nombresEtiquetas) {
-        const [etiqueta] = await Etiqueta.findOrCreate({ 
-          where: { nombre: nombre.toLowerCase() }
+        const [etiqueta] = await Etiqueta.findOrCreate({
+          where: {
+            nombre: nombre.toLowerCase()
+          }
         });
-        await nuevaPublicacion.addEtiqueta(etiqueta); 
+
+        await nuevaPublicacion.addEtiqueta(etiqueta);
       }
     }
 
     console.log(`¡Nueva foto publicada con éxito por el usuario ID: ${usuarioIdReal}!`);
-    return res.redirect('/'); 
+
+    return res.redirect('/');
 
   } catch (error) {
-    console.error('Error en crearPublicacion:', error);
-    return res.status(500).render('crearPublicacion', { error: 'Hubo un error al crear la publicación.' });
+
+    console.error("ERROR COMPLETO:");
+    console.error(error);
+    console.error("MENSAJE:", error.message);
+    console.error("STACK:", error.stack);
+
+    return res.status(500).render('crearPublicacion', {
+      error: 'Hubo un error al crear la publicación.'
+    });
   }
-};
+}; 
 
 const obtenerFeedGlobal = async (req, res) => {
   try {
