@@ -110,7 +110,7 @@ https://github.com/luliortiz222/Fotaza-2.0.git
 Video de demostración del sistema (en Youtube):
 
 ```text
-https://youtu.be/fF5REP7gqYM
+https://youtu.be/NPokHVIatrA
 ```
 
 ---
