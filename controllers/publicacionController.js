@@ -185,22 +185,36 @@ const obtenerPerfilPersonal = async (req, res) => {
 
     const usuarioId = req.session.usuarioId;
 
-    const publicacionesConValoracion = await Promise.all(publicaciones.map(async (pub) => {
-      const valoracion = await Valoracion.findOne({
-        where: { usuarioId, publicacionId: pub.id }
-      });
-      
-      const pubJSON = pub.toJSON();
-      pubJSON.miPuntuacion = valoracion ? valoracion.puntuacion : 0;
-      return pubJSON;
-    }));
-
-    res.render('index', { 
-      publicaciones: publicacionesConValoracion, 
-      titulo: "Mi Perfil",
-      nombreUsuario: req.session.nombreUsuario,
-      usuarioId: usuarioId 
+    const colecciones = await Coleccion.findAll({
+      where: {
+        usuarioId
+      }
     });
+
+    const publicacionesConValoracion = await Promise.all(
+      publicaciones.map(async (pub) => {
+        const valoracion = await Valoracion.findOne({
+          where: {
+            usuarioId,
+            publicacionId: pub.id
+          }
+        });
+
+        const pubJSON = pub.toJSON();
+        pubJSON.miPuntuacion = valoracion ? valoracion.puntuacion : 0;
+
+        return pubJSON;
+      })
+    );
+
+    res.render('index', {
+      publicaciones: publicacionesConValoracion,
+      colecciones,
+      titulo: 'Mi Perfil',
+      nombreUsuario: req.session.nombreUsuario,
+      usuarioId: usuarioId
+    });
+
   } catch (error) {
     console.error('Error en Perfil Personal:', error);
     res.status(500).send('Error al cargar el perfil');
