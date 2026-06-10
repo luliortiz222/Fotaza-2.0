@@ -14,12 +14,11 @@ block content
               h3.notification-msg= n.mensaje
 
               if n.createdAt
-                span.notification-time=
-                  new Date(n.createdAt).toLocaleString('es-AR', {
-                    dateStyle: 'short',
-                    timeStyle: 'short',
-                    timeZone: 'America/Argentina/Buenos_Aires'
-                  })
+                span.notification-time #{new Date(n.createdAt).toLocaleString('es-AR', {
+                  dateStyle: 'short',
+                  timeStyle: 'short',
+                  timeZone: 'America/Argentina/Buenos_Aires'
+                })}
 
             .notification-status
               if n.leido
