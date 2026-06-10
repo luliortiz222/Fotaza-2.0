@@ -9,12 +9,17 @@ block content
       .notifications-list
         each n in notificaciones
           .notification-card(class=n.leido ? 'leida' : 'nueva')
-            
+
             .notification-content
               h3.notification-msg= n.mensaje
+
               if n.createdAt
-                span.notification-time
-                  |#{new Date(n.createdAt).toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' })}
+                span.notification-time=
+                  new Date(n.createdAt).toLocaleString('es-AR', {
+                    dateStyle: 'short',
+                    timeStyle: 'short',
+                    timeZone: 'America/Argentina/Buenos_Aires'
+                  })
 
             .notification-status
               if n.leido
